@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>💖 Happy Birthday, My Love</title>
 <style>
   :root{
@@ -25,7 +25,6 @@
     display:flex; align-items:center; justify-content:center; flex-direction:column;
     gap:14px; padding:10px; width:100%; max-width:1200px;
   }
-  /* Pulsing heart stays outside box */
   #heartBtn{
     font-size: clamp(60px,15vw,140px);
     cursor:pointer; user-select:none;
@@ -34,9 +33,8 @@
   }
   @keyframes pulse{ 0%,100%{transform:scale(1)} 50%{transform:scale(1.2)} }
 
-  /* Text box for readability */
   .text-box{
-    background: rgba(255,255,255,0.78);
+    background: rgba(255,255,255,0.82);
     backdrop-filter: blur(6px);
     border: 1px solid rgba(255,255,255,0.7);
     box-shadow: 0 12px 40px rgba(122,17,95,0.18);
@@ -79,11 +77,19 @@
   </div>
 
 <script>
+// ---- Mobile-safe settings ----
+const isMobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
+const DPR = Math.min(1.5, (window.devicePixelRatio || 1)); // cap to reduce memory
+
+// Pause animations when tab is hidden (saves resources)
+let running = true;
+document.addEventListener('visibilitychange', () => { running = !document.hidden; });
+
 // ---------- Sprite cache for emojis ----------
 function makeEmojiCanvas(char, size){
   const c = document.createElement('canvas');
-  const pad = Math.ceil(size*0.4);
-  c.width = c.height = size + pad*2;
+  const pad = Math.ceil(size*0.35);
+  c.width = c.height = (size + pad*2);
   const g = c.getContext('2d');
   g.textAlign = 'center'; g.textBaseline = 'middle';
   g.font = size + 'px serif';
@@ -101,24 +107,31 @@ function getGlyph(char, size){
 const bg = document.getElementById('bg');
 const ctx = bg.getContext('2d');
 let W,H,cx,cy;
-function resizeBG(){ W=bg.width=innerWidth; H=bg.height=innerHeight; cx=W/2; cy=H/2; }
-resizeBG(); addEventListener('resize',resizeBG);
+function resizeBG(){
+  const w = innerWidth, h = innerHeight;
+  bg.style.width = w + 'px'; bg.style.height = h + 'px';
+  bg.width = Math.floor(w * DPR); bg.height = Math.floor(h * DPR);
+  ctx.setTransform(DPR,0,0,DPR,0,0);
+  W=w; H=h; cx=W/2; cy=H/2;
+}
+resizeBG(); addEventListener('resize',resizeBG, {passive:true});
 
 const EMOJIS = ["❤️","💖","💜","💕","💘","💞","😘","😚","😙","😗","⭐","✨"];
 let sprites = [];
-const SPRITE_COUNT = 150;
+const SPRITE_COUNT = isMobile ? 90 : 150; // fewer on mobile
 for(let i=0;i<SPRITE_COUNT;i++){ sprites.push(resetSprite({})); }
 function resetSprite(s){
   s.angle=Math.random()*Math.PI*2;
   s.radius=0.35+Math.random()*1;
   s.z=1+Math.random()*3.2;
   s.char=EMOJIS[(Math.random()*EMOJIS.length)|0];
-  s.size=16+Math.random()*22;
+  s.size=(isMobile?14:16)+Math.random()*22;
   s.spin=(Math.random()<.5?-1:1)*(0.002+Math.random()*0.006);
-  s.speed=0.012+Math.random()*0.018;
+  s.speed=(isMobile?0.014:0.012)+Math.random()*0.018;
   return s;
 }
 function loopBG(){
+  if(!running){ requestAnimationFrame(loopBG); return; }
   ctx.clearRect(0,0,W,H);
   for(const s of sprites){
     s.angle+=s.spin; s.z-=s.speed;
@@ -138,21 +151,33 @@ requestAnimationFrame(loopBG);
 // ---------- Confetti bursts (behind text) ----------
 const conf=document.getElementById('confetti');
 const c2=conf.getContext('2d');
-let W2,H2; function resizeC(){ W2=conf.width=innerWidth; H2=conf.height=innerHeight; } resizeC(); addEventListener('resize',resizeC);
+let W2,H2;
+function resizeC(){
+  const w = innerWidth, h = innerHeight;
+  conf.style.width = w + 'px'; conf.style.height = h + 'px';
+  conf.width = Math.floor(w * DPR); conf.height = Math.floor(h * DPR);
+  c2.setTransform(DPR,0,0,DPR,0,0);
+  W2=w; H2=h;
+}
+resizeC(); addEventListener('resize',resizeC, {passive:true});
 
 let pieces=[];
+const MAX_PIECES = isMobile ? 500 : 900;
 function addConfetti(n=110, origin={x:innerWidth/2,y:innerHeight/2}){
-  for(let i=0;i<n;i++){
+  const count = isMobile ? Math.floor(n*0.7) : n;
+  for(let i=0;i<count;i++){
     pieces.push({x:origin.x,y:origin.y,
       vx:(Math.random()*2-1)*6.5, vy:(Math.random()*-1-1)*7.5,
       g:0.22+Math.random()*0.09,
       char:EMOJIS[(Math.random()*EMOJIS.length)|0],
-      size:22+Math.random()*26,
-      life:150+Math.random()*120
+      size:(isMobile?20:22)+Math.random()*26,
+      life:(isMobile?120:150)+Math.random()*120
     });
   }
+  if(pieces.length > MAX_PIECES) pieces.splice(0, pieces.length - MAX_PIECES);
 }
 function loopConfetti(){
+  if(!running){ requestAnimationFrame(loopConfetti); return; }
   c2.clearRect(0,0,W2,H2);
   pieces=pieces.filter(p=>(p.life-=1)>0 && p.y<H2+40);
   for(const p of pieces){
@@ -170,13 +195,14 @@ const msg=document.getElementById('msg');
 
 btn.addEventListener('click',()=>{
   msg.classList.add('show');
-  addConfetti(200,{x:innerWidth/2,y:innerHeight/2.1});
-});
+  addConfetti(isMobile?150:220,{x:innerWidth/2,y:innerHeight/2.1});
+}, {passive:true});
 document.addEventListener('click',e=>{
   if(e.target===btn) return;
-  addConfetti(90,{x:e.clientX,y:e.clientY});
-});
-setTimeout(()=> addConfetti(90,{x:innerWidth/2,y:innerHeight/1.25}), 700);
+  addConfetti(isMobile?70:90,{x:e.clientX,y:e.clientY});
+}, {passive:true});
+
+setTimeout(()=> addConfetti(isMobile?70:90,{x:innerWidth/2,y:innerHeight/1.25}), 700);
 </script>
 </body>
 </html>
