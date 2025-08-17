@@ -6,16 +6,12 @@
 <title>For You</title>
 <style>
   :root{
-    --rose:#ffd1e6;
-    --orchid:#f3c0ff;
-    --lilac:#e7c6ff;
+    --rose:#ffd1e6; --orchid:#f3c0ff; --lilac:#e7c6ff;
     --ink1:#4d0f3f; --ink2:#6c2a5e; --ink3:#5b1c51;
-    --glass: rgba(255,255,255,.78);
-    --glass-border: rgba(255,255,255,.9);
+    --glass: rgba(255,255,255,.78); --glass-border: rgba(255,255,255,.9);
     --shadow: 0 16px 44px rgba(91,28,81,.16), 0 3px 12px rgba(91,28,81,.10);
-    --glow1: rgba(255, 170, 232, .9);
-    --bw-bg1:#f2f2f2; --bw-bg2:#e5e5e5; --bw-ink:#2a2a2a;
-    --bw-mid:#cfcfcf; --bw-light:#f8f8f8;
+    --glow1: rgba(255, 170, 232, .95);
+    --bw-bg1:#f2f2f2; --bw-bg2:#e5e5e5; --bw-ink:#2a2a2a; --bw-mid:#cfcfcf; --bw-light:#f8f8f8;
   }
   *{box-sizing:border-box}
   html,body{height:100%}
@@ -32,8 +28,8 @@
     background:
       repeating-linear-gradient(0deg, rgba(0,0,0,.03) 0 2px, rgba(0,0,0,0) 2px 4px),
       linear-gradient(180deg, var(--bw-bg1), var(--bw-bg2));
-    z-index: 20;
-    transition: opacity .8s ease, transform .8s ease;
+    z-index: 30;
+    transition: opacity 1s ease, transform 1s ease;
     filter: grayscale(1) contrast(0.85) brightness(0.96);
   }
   .envelope-wrap{ position:relative; width:min(86vw, 520px); aspect-ratio:4/3; filter: drop-shadow(0 14px 26px rgba(0,0,0,.22)); }
@@ -44,7 +40,7 @@
     clip-path: polygon(0 0, 100% 0, 50% 100%);
     border-top-left-radius: 14px; border-top-right-radius: 14px;
     box-shadow: inset 0 -2px 0 rgba(255,255,255,.25);
-    transition: transform .8s cubic-bezier(.22,1,.27,1);
+    transition: transform .9s cubic-bezier(.22,1,.27,1);
   }
   .letter{
     position:absolute; left:6%; right:6%; top:20%; bottom:10%;
@@ -62,73 +58,110 @@
     letter-spacing:.3px; cursor:pointer; box-shadow:0 8px 20px rgba(0,0,0,.18); transition: transform .2s ease, box-shadow .2s ease; }
   .cta:active{ transform: translateX(-50%) scale(.97); box-shadow:0 6px 16px rgba(0,0,0,.18); }
   .env-shadow{ position:absolute; inset:auto 10% -20% 10%; height:22%; filter: blur(18px); background: radial-gradient(60% 60% at 50% 30%, rgba(0,0,0,.28), rgba(0,0,0,0) 70%); }
+
   body.opening .envelope-scene{ transform: scale(1.01); }
-  body.opened .envelope-scene{ opacity:0; transform: scale(1.02); pointer-events:none; }
-  body.opening .flap{ transform: rotateX(170deg); }
+  body.opened .envelope-scene{ opacity:0; transform: scale(1.04); pointer-events:none; }
+  body.opening .flap{ transform: rotateX(178deg); }
 
-  .colorize{ position:fixed; inset:0; pointer-events:none; z-index:15; opacity:0; mix-blend-mode: screen;
-    background: repeating-linear-gradient(0deg, rgba(255,255,255,.08) 0 2px, rgba(255,255,255,0) 2px 4px);
-    transition: opacity .8s ease; }
-  body.opened .colorize{ opacity:1; animation: hueRise 1.8s ease forwards; }
-  @keyframes hueRise{ 0%{ filter: grayscale(1) saturate(0.2) brightness(1.05);} 60%{ filter: grayscale(0.2) saturate(1.6) brightness(1.08);} 100%{ filter:none;} }
+  /* Cinematic reveal overlay */
+  .sweep{
+    position:fixed; inset:0; z-index:25; pointer-events:none; opacity:0;
+    background: radial-gradient(1200px 800px at 50% 50%, rgba(255,255,255,.9), rgba(255,255,255,.0) 60%),
+                conic-gradient(from -90deg at 50% 50%, rgba(255,140,206,.0), rgba(255,140,206,.3), rgba(187,140,255,.35), rgba(255,140,206,.0));
+    filter: blur(12px) saturate(1.2);
+    transition: opacity .8s ease;
+    mask-image: linear-gradient(180deg, black 30%, transparent 100%);
+  }
+  body.opened .sweep{ opacity:1; animation: sweepMove 1.6s ease-out forwards; }
+  @keyframes sweepMove{
+    0%{ transform: translateY(20px) scale(1.02); opacity:.2 }
+    60%{ transform: translateY(-10px) scale(1.0); opacity:.9 }
+    100%{ transform: translateY(0) scale(1); opacity:0 }
+  }
 
-  /* Birthday scene */
-  .party-root{ position:fixed; inset:0; opacity:0; transform: translateY(8px) scale(.98); transition: opacity 1s ease .2s, transform 1s ease .2s; }
-  body.opened .party-root{ opacity:1; transform: translateY(0) scale(1); }
+  /* Party scene */
   .party-root{
+    position:fixed; inset:0; display:flex; align-items:center; justify-content:center;
+    opacity:0; transform: translateY(10px) scale(.98);
+    transition: opacity 1s ease .15s, transform 1s ease .15s;
     background:
       radial-gradient(1400px 900px at 10% -10%, rgba(255,182,222,.35), transparent 60%),
       radial-gradient(1200px 800px at 110% 120%, rgba(237,200,255,.35), transparent 60%),
       linear-gradient(180deg, var(--rose), var(--orchid) 50%, var(--lilac));
-    filter: saturate(1.2);
+    filter: saturate(1.15);
   }
-  canvas.bg-layer{ position:fixed; inset:0; pointer-events:none; z-index:0; opacity:0; transition: opacity .8s ease .45s; }
-  body.opened canvas.bg-layer{ opacity:1; }
-  .content{ position:relative; z-index:2; display:flex; flex-direction:column; align-items:center; gap:16px; padding:10px; width:min(1100px, 96vw); margin:auto; inset:0; }
+  body.opened .party-root{ opacity:1; transform: translateY(0) scale(1); }
 
-  /* Cute headline style (text unchanged) */
-  .text-box{ background: linear-gradient(180deg, var(--glass), rgba(255,255,255,.62)); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
-    border: 1px solid var(--glass-border); border-radius: 24px; box-shadow: var(--shadow);
-    padding: clamp(16px, 4vw, 28px); text-align:center; }
+  canvas.bg-layer{ position:fixed; inset:0; pointer-events:none; z-index:0; opacity:0; transition: opacity .9s ease .35s; }
+  body.opened canvas.bg-layer{ opacity:1; }
+
+  /* Layout blocks to prevent overlap */
+  .content{
+    position:relative; z-index:2; display:flex; flex-direction:column; align-items:center;
+    width:min(1100px, 96vw); margin:auto; padding: clamp(12px, 3vw, 18px); gap: clamp(14px, 4vw, 24px);
+  }
+
+  /* Heart block (separate from text) */
+  .hero-heart{
+    display:flex; align-items:center; justify-content:center; width:100%;
+    margin-top: clamp(6px, 4vw, 20px);
+  }
+  .heart-wrap{
+    position:relative; display:grid; place-items:center; width: clamp(96px, 20vw, 170px); aspect-ratio:1/1;
+    cursor:pointer; user-select:none; filter: drop-shadow(0 14px 36px rgba(183,108,255,.45));
+    margin-bottom: clamp(8px, 3vw, 16px);
+  }
+  #heartBtn{ font-size: clamp(70px,17.5vw,160px); line-height:1; transform: translateZ(0) scale(1); animation: beat 1.05s ease-in-out infinite; }
+  @keyframes beat{ 0%,100%{transform:scale(1)} 14%{transform:scale(1.12)} 28%{transform:scale(1)} 42%{transform:scale(1.08)} 70%{transform:scale(1)} }
+
+  .heart-wrap::before{
+    content:""; position:absolute; inset:-20%; border-radius:50%;
+    background: radial-gradient(circle at 50% 50%, var(--glow1) 0%, rgba(255,255,255,.75) 22%, transparent 62%);
+    filter: blur(16px); animation: halo 1.8s ease-in-out infinite;
+  }
+  @keyframes halo{ 0%,100%{ transform: scale(1); opacity:.95 } 50%{ transform: scale(1.04); opacity:1 } }
+
+  .orbit{
+    position:absolute; inset:-8%; border-radius:50%; pointer-events:none;
+    background:
+      radial-gradient(4px 4px at 10% 50%, rgba(255,255,255,.95), transparent 60%),
+      radial-gradient(3px 3px at 70% 20%, rgba(255,255,255,.9), transparent 60%),
+      radial-gradient(3px 3px at 80% 70%, rgba(255,255,255,.95), transparent 60%),
+      radial-gradient(2.5px 2.5px at 30% 80%, rgba(255,255,255,.9), transparent 60%);
+    filter: drop-shadow(0 0 12px rgba(255,255,255,.8));
+    animation: orbit 2.6s linear infinite;
+    mix-blend-mode: screen;
+  }
+  @keyframes orbit{ to{ transform: rotate(360deg) } }
+
+  /* Text card centered and separated from heart */
+  .text-box{
+    background: linear-gradient(180deg, var(--glass), rgba(255,255,255,.62));
+    -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+    border: 1px solid var(--glass-border);
+    border-radius: 26px; box-shadow: var(--shadow);
+    padding: clamp(18px, 5vw, 32px);
+    text-align:center;
+    max-width: 820px;
+    margin: 0 auto;
+  }
   h1{
-    --stroke: rgba(255,255,255,.8);
-    font-size: clamp(36px,7.6vw,78px); margin:0;
+    font-size: clamp(36px,7.6vw,84px); margin:0;
     background: linear-gradient(135deg, #ff7ab6, #b76cff);
     -webkit-background-clip:text; background-clip:text; color:transparent;
-    text-shadow: 0 1px 0 var(--stroke), 0 2px 0 var(--stroke), 0 8px 18px rgba(255,118,182,.25);
-    letter-spacing: .8px;
+    text-shadow: 0 1px 0 rgba(255,255,255,.85), 0 2px 0 rgba(255,255,255,.85), 0 10px 22px rgba(255,118,182,.3);
+    letter-spacing: .6px;
   }
-  /* tiny decorative hearts under headline */
-  .cute-underline{ margin-top:6px; font-size: clamp(16px,3.6vw,22px); opacity:.9; }
-  .cute-underline span{ display:inline-block; animation: floaty 3s ease-in-out infinite; }
-  .cute-underline span:nth-child(2){ animation-delay:.2s }
-  .cute-underline span:nth-child(3){ animation-delay:.4s }
-  @keyframes floaty{ 0%,100%{ transform: translateY(0)} 50%{ transform: translateY(-3px)} }
+  #moreText{
+    white-space: pre-line;
+    font-size: clamp(18px,4.8vw,26px);
+    color: var(--ink3);
+    opacity:0; transform: translateY(10px) scale(0.99);
+    transition: opacity .6s ease, transform .6s cubic-bezier(.17,.84,.44,1);
+    margin-top: 12px;
+  }
+  #moreText.show{ opacity:1; transform: translateY(0) scale(1); }
 
-  /* Heart button */
-  .heart-wrap{ position:relative; display:grid; place-items:center; width: clamp(90px, 18vw, 160px); aspect-ratio:1/1;
-    filter: drop-shadow(0 12px 30px rgba(183,108,255,.35)); cursor:pointer; user-select:none; }
-  #heartBtn{ font-size: clamp(64px,16vw,150px); line-height:1; transform: translateZ(0) scale(1); animation: beat 1.05s ease-in-out infinite; }
-  @keyframes beat{ 0%,100%{transform:scale(1)} 14%{transform:scale(1.12)} 28%{transform:scale(1)} 42%{transform:scale(1.08)} 70%{transform:scale(1)} }
-  .heart-wrap::before{ content:""; position:absolute; inset:-18%; border-radius:50%;
-    background: radial-gradient(circle at 50% 50%, var(--glow1) 0%, rgba(255,255,255,.7) 22%, transparent 60%);
-    opacity:.95; filter: blur(14px); transition: opacity .25s ease, transform .25s ease; }
-  .glitter{ position:absolute; inset:-6%; border-radius:50%; pointer-events:none; mix-blend-mode: screen;
-    background:
-      radial-gradient(3px 3px at 22% 28%, rgba(255,255,255,.95), transparent 60%),
-      radial-gradient(2.5px 2.5px at 66% 34%, rgba(255,255,255,.9), transparent 60%),
-      radial-gradient(2px 2px at 38% 70%, rgba(255,255,255,.95), transparent 60%),
-      radial-gradient(2.2px 2.2px at 82% 68%, rgba(255,255,255,.95), transparent 60%),
-      radial-gradient(1.8px 1.8px at 28% 58%, rgba(255,255,255,.9), transparent 60%);
-    animation: twinkle 1.8s steps(1,end) infinite; filter: drop-shadow(0 0 10px rgba(255,255,255,.65)); }
-  @keyframes twinkle{ 0%{opacity:.85;transform:scale(1)} 50%{opacity:.25;transform:scale(1.03)} 100%{opacity:.85;transform:scale(1)} }
-
-  /* Hidden msg (kept for click animation; content unchanged) */
-  #msg{ font-size: clamp(20px,4.5vw,32px); color:var(--ink3); opacity:0; transform:translateY(10px); transition:opacity .5s ease, transform .5s ease; }
-  #msg.show{ opacity:1; transform:translateY(0) }
-
-  .scanlines{ position:fixed; inset:0; pointer-events:none; z-index:3; opacity:0; background: repeating-linear-gradient(0deg, rgba(0,0,0,.06) 0 2px, rgba(0,0,0,0) 2px 4px); transition: opacity .7s ease; }
-  body.opened .scanlines{ opacity:.2; }
 </style>
 </head>
 <body>
@@ -150,8 +183,8 @@
     </div>
   </div>
 
-  <div class="colorize" id="colorize"></div>
-  <div class="scanlines"></div>
+  <!-- Cinematic reveal overlay -->
+  <div class="sweep"></div>
 
   <!-- Party Scene -->
   <div class="party-root">
@@ -159,14 +192,19 @@
     <canvas id="confetti" class="bg-layer"></canvas>
 
     <div class="content" aria-live="polite">
-      <div class="heart-wrap" id="heartWrap" aria-label="Heart">
-        <div class="glitter" aria-hidden="true"></div>
-        <div id="heartBtn">💖</div>
+      <!-- Heart on top center as its own block -->
+      <div class="hero-heart">
+        <div class="heart-wrap" id="heartWrap" aria-label="Heart">
+          <div class="orbit" aria-hidden="true"></div>
+          <div id="heartBtn">💖</div>
+        </div>
       </div>
+
+      <!-- Text card below heart -->
       <div class="text-box">
-        <h1 id="headline" class="reveal">Happy Birthday My Love</h1>
-        <div class="cute-underline"><span>💝</span> <span>💞</span> <span>💝</span></div>
-        <div id="msg">I love you more than all the stars, all the songs, and every heartbeat. Happy Birthday, my forever.</div>
+        <h1 id="headline">Happy Birthday My Love</h1>
+        <div id="moreText">My heart beats happiest with you 💕
+I love you more than all the stars ✨, all the songs 🎶, and every heartbeat ❤️. Happy Birthday, my forever. 💕💜💘😘</div>
       </div>
     </div>
   </div>
@@ -179,11 +217,11 @@ const envelopeScene = document.getElementById('envelopeScene');
 let opened = false, rafStarted = false;
 function openEnvelope(){
   if(opened) return; opened = true;
-  document.body.classList.add('opening'); flap.style.transform = 'rotateX(170deg)';
+  document.body.classList.add('opening'); flap.style.transform = 'rotateX(178deg)';
   setTimeout(()=>{
     document.body.classList.remove('opening'); document.body.classList.add('opened');
-    if(!rafStarted){ rafStarted = true; startParty(); staggerHeadline(); setTimeout(()=> popAt(innerWidth/2, innerHeight/1.18, 1.2), 700); }
-  }, 420);
+    if(!rafStarted){ rafStarted = true; startParty(); setTimeout(()=> popAt(innerWidth/2, innerHeight/1.18, 1.2), 650); }
+  }, 480);
 }
 openBtn.addEventListener('click', openEnvelope, {passive:true});
 envelopeScene.addEventListener('click', (e)=>{ if(e.target === openBtn) return; openEnvelope(); }, {passive:true});
@@ -198,7 +236,7 @@ const DPR = Math.min(DPR_CAP, window.devicePixelRatio || 1);
 let running = true;
 document.addEventListener('visibilitychange', () => { running = !document.hidden; });
 
-// Emojis (pink/lilac + stars/moon/clouds + KISSES)
+// Emojis (pink/lilac + stars/moon/clouds + kisses)
 const EMOJIS = ["💖","💗","💜","✨","🌟","⭐","🌙","☁️","☁️","😘","😚","💋","✨","💖","💗"];
 
 const glyphCache = new Map();
@@ -277,19 +315,21 @@ function loopConfetti(){
 
 /* Interactions */
 const heartWrap = document.getElementById('heartWrap');
-const msg=document.getElementById('msg');
+const moreText = document.getElementById('moreText');
+function heartCenter(){ const rect = heartWrap.getBoundingClientRect(); return { x: rect.left + rect.width/2, y: rect.top + rect.height/2 }; }
+function popAt(x,y,scale=1){ addConfetti(Math.round((isMobile?56:80)*scale), {x,y}); }
 function sparkleBurst(x,y){
-  const n = 10;
+  const n = 14;
   for(let i=0;i<n;i++){
     const s = document.createElement('div'); s.className='spark';
-    s.style.position='fixed'; s.style.width='6px'; s.style.height='6px';
+    s.style.position='fixed'; s.style.width='7px'; s.style.height='7px';
     s.style.background='radial-gradient(circle, #fff 0 35%, rgba(255,255,255,0) 70%)';
     s.style.borderRadius='50%'; s.style.pointerEvents='none'; s.style.zIndex='3';
-    s.style.filter='drop-shadow(0 0 8px #fff)';
-    const a = Math.random()*Math.PI*2, r = 6 + Math.random()*24;
+    s.style.filter='drop-shadow(0 0 10px #fff)';
+    const a = Math.random()*Math.PI*2, r = 8 + Math.random()*28;
     s.style.left = (x + Math.cos(a)*4) + 'px'; s.style.top  = (y + Math.sin(a)*4) + 'px';
     document.body.appendChild(s);
-    const dx = Math.cos(a)*r, dy = Math.sin(a)*r, life = 520 + Math.random()*320;
+    const dx = Math.cos(a)*r, dy = Math.sin(a)*r, life = 560 + Math.random()*360;
     const start = performance.now();
     (function anim(t){
       const k = Math.min(1, (t-start)/life);
@@ -298,15 +338,18 @@ function sparkleBurst(x,y){
     })(start);
   }
 }
-function heartCenter(){ const rect = heartWrap.getBoundingClientRect(); return { x: rect.left + rect.width/2, y: rect.top + rect.height/2 }; }
-function popAt(x,y,scale=1){ addConfetti(Math.round((isMobile?56:80)*scale), {x,y}); }
 function bindPartyEvents(){
   heartWrap.addEventListener('click',()=>{
-    msg.classList.add('show');
-    const {x,y} = heartCenter(); sparkleBurst(x,y);
-    popAt(innerWidth/2, innerHeight/2.05, 2.0);
+    const {x,y} = heartCenter();
+    sparkleBurst(x,y);
+    popAt(innerWidth/2, innerHeight/2.05, 2.2);
+    // Reveal exact text under headline
+    moreText.classList.add('show');
   }, {passive:true});
+
+  // Optional confetti taps elsewhere
   document.addEventListener('click',e=>{ if(heartWrap.contains(e.target)) return; popAt(e.clientX, e.clientY, 1); }, {passive:true});
+
   let touching=false, lastPop=0;
   document.addEventListener('pointerdown', e=>{ touching=true; sparkleBurst(e.clientX, e.clientY); popAt(e.clientX, e.clientY, 1.1); }, {passive:true});
   document.addEventListener('pointermove', e=>{ if(!touching) return; const now = performance.now();
@@ -315,24 +358,7 @@ function bindPartyEvents(){
   document.addEventListener('pointercancel', ()=>{ touching=false; }, {passive:true});
 }
 
-/* Headline letter-by-letter reveal */
-function staggerHeadline(){
-  const h = document.getElementById('headline');
-  if(!h.dataset.ready){
-    const text = h.textContent; h.textContent = "";
-    for(const ch of text){
-      const span = document.createElement('span'); span.textContent = ch; span.style.display='inline-block';
-      span.style.opacity='0'; span.style.transform='translateY(12px) scale(0.98)'; span.style.filter='blur(4px)';
-      span.style.animation='popIn .7s cubic-bezier(.17,.84,.44,1) forwards'; h.appendChild(span);
-    }
-    h.dataset.ready = "1";
-  }
-  const spans = Array.from(document.querySelectorAll('#headline span'));
-  spans.forEach((s,i)=> s.style.animationDelay = (0.02*i)+'s');
-}
-/* popIn keyframes for headline spans */
-const styleEl = document.createElement('style'); styleEl.textContent = `@keyframes popIn{to{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}}`; document.head.appendChild(styleEl);
-
+/* Start renderers after envelope opens */
 function startParty(){ setupCanvases(); initSprites(); requestAnimationFrame(loopBG); requestAnimationFrame(loopConfetti); bindPartyEvents(); }
 </script>
 </body>
