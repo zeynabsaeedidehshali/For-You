@@ -10,112 +10,154 @@
     --ink1:#4d0f3f; --ink2:#6c2a5e; --ink3:#5b1c51;
     --glass: rgba(255,255,255,.78); --glass-border: rgba(255,255,255,.9);
     --shadow: 0 16px 44px rgba(91,28,81,.16), 0 3px 12px rgba(91,28,81,.10);
-    --glow1: rgba(255, 170, 232, .95);
-    --bw-bg1:#f2f2f2; --bw-bg2:#e5e5e5; --bw-ink:#2a2a2a; --bw-mid:#cfcfcf; --bw-light:#f8f8f8;
+    --glow1: rgba(255, 170, 232, .9);
+    --bw-bg1:#f2f2f2; --bw-bg2:#e5e5e5; --bw-ink:#2a2a2a; --bw-mid:#d9d9d9; --bw-light:#fafafa;
   }
   *{box-sizing:border-box}
   html,body{height:100%}
   body{
     margin:0; touch-action: manipulation; overflow:hidden;
+    -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
     font-family: ui-rounded, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji", emoji, sans-serif;
     background: linear-gradient(180deg, var(--bw-bg1), var(--bw-bg2));
     color: var(--bw-ink);
   }
 
-  /* Envelope (neutral B/W) */
+  /* ---------------- Envelope Scene (no overlap, mobile-safe) ---------------- */
   .envelope-scene{
-    position:fixed; inset:0; display:grid; place-items:center;
+    position:fixed; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap: 18px; padding: 18px 14px 28px;
     background:
-      repeating-linear-gradient(0deg, rgba(0,0,0,.03) 0 2px, rgba(0,0,0,0) 2px 4px),
       linear-gradient(180deg, var(--bw-bg1), var(--bw-bg2));
     z-index: 30;
-    transition: opacity 1s ease, transform 1s ease;
-    filter: grayscale(1) contrast(0.85) brightness(0.96);
+    transition: opacity .9s ease, transform .9s ease;
+    filter: grayscale(1) contrast(0.9) brightness(0.97);
   }
-  .envelope-wrap{ position:relative; width:min(86vw, 520px); aspect-ratio:4/3; filter: drop-shadow(0 14px 26px rgba(0,0,0,.22)); }
-  .envelope{ position:absolute; inset:0; border-radius:14px; background: linear-gradient(180deg, var(--bw-light), var(--bw-mid)); box-shadow: 0 10px 24px rgba(0,0,0,.18), 0 2px 8px rgba(0,0,0,.1); overflow:hidden; }
+  .env-stack{ display:flex; flex-direction:column; align-items:center; gap:14px; width:100%; max-width:min(92vw,560px); }
+
+  .envelope-wrap{
+    position:relative; width:100%; aspect-ratio: 4/3;
+    perspective: 1200px; /* important for stable 3D on mobile */
+    filter: drop-shadow(0 10px 22px rgba(0,0,0,.2));
+  }
+  .envelope{
+    position:absolute; inset:0; border-radius: 16px; overflow:hidden;
+    background: linear-gradient(180deg, var(--bw-light), var(--bw-mid));
+    box-shadow:
+      0 2px 0 rgba(255,255,255,.8) inset,
+      0 -2px 0 rgba(0,0,0,.04) inset,
+      0 10px 24px rgba(0,0,0,.16), 0 2px 8px rgba(0,0,0,.08);
+    transform-style: preserve-3d;
+  }
+
+  /* Inner pocket graphic */
+  .pocket{
+    position:absolute; inset:auto 0 0 0; height:55%;
+    background:
+      linear-gradient(180deg, #ececec, #d6d6d6);
+    clip-path: polygon(0 0, 100% 0, 85% 100%, 15% 100%);
+    box-shadow: 0 -1px 0 rgba(255,255,255,.7) inset;
+  }
+
   .flap{
-    position:absolute; left:0; right:0; top:0; height:55%; transform-origin: top center;
-    background: linear-gradient(180deg, #ddd, #bbb);
+    position:absolute; left:0; right:0; top:0; height:58%;
+    transform-origin: top center;
+    background: linear-gradient(180deg, #e5e5e5, #c9c9c9);
     clip-path: polygon(0 0, 100% 0, 50% 100%);
-    border-top-left-radius: 14px; border-top-right-radius: 14px;
-    box-shadow: inset 0 -2px 0 rgba(255,255,255,.25);
-    transition: transform .9s cubic-bezier(.22,1,.27,1);
+    border-top-left-radius: 16px; border-top-right-radius: 16px;
+    box-shadow: 0 1px 0 rgba(255,255,255,.85) inset, 0 -2px 0 rgba(0,0,0,.05) inset;
+    backface-visibility: hidden; /* prevent flicker on iOS */
+    transform: rotateX(0deg);
+    transition: transform .8s cubic-bezier(.22,1,.27,1);
   }
+
+  /* Paper letter, subtle grain */
   .letter{
-    position:absolute; left:6%; right:6%; top:20%; bottom:10%;
-    background:#fff; border-radius:10px; box-shadow: 0 4px 14px rgba(0,0,0,.08);
+    position:absolute; left:7%; right:7%; top:18%; bottom:9%;
+    background:
+      linear-gradient(180deg, #fff, #f7f7f7),
+      repeating-linear-gradient(90deg, rgba(0,0,0,.015) 0 1px, rgba(0,0,0,0) 1px 3px);
+    border-radius: 12px;
+    box-shadow: 0 2px 0 rgba(0,0,0,.05) inset, 0 8px 20px rgba(0,0,0,.06);
     display:flex; align-items:center; justify-content:center; text-align:center;
-    color:#333; padding:18px; line-height:1.35; font-size: clamp(16px, 3.8vw, 18px);
+    color:#333; padding:18px; line-height:1.35; font-size: clamp(16px, 3.6vw, 18px);
   }
-  .seal{ position:absolute; left:50%; top:36%; transform:translate(-50%,-50%); width: clamp(54px, 14vw, 74px); aspect-ratio:1/1; border-radius:50%;
-    background: radial-gradient(circle at 40% 35%, #ddd, #bdbdbd 55%, #8c8c8c);
+
+  /* Wax seal (grayscale, little pulse) */
+  .seal{
+    position:absolute; left:50%; top:38%; transform:translate(-50%,-50%) translateZ(1px);
+    width: clamp(54px, 14vw, 74px); aspect-ratio:1/1; border-radius:50%;
+    background: radial-gradient(circle at 42% 34%, #eee, #bdbdbd 58%, #8c8c8c);
     color:#fff; display:grid; place-items:center; font-size: clamp(22px, 6vw, 28px);
-    box-shadow: 0 6px 16px rgba(0,0,0,.18), inset 0 2px 10px rgba(255,255,255,.45); pointer-events:none; }
+    box-shadow: 0 6px 16px rgba(0,0,0,.18), inset 0 2px 10px rgba(255,255,255,.45);
+    animation: sealPulse 2.2s ease-in-out infinite;
+    backface-visibility: hidden;
+  }
   .seal::after{ content:"✉️"; filter: grayscale(1); }
-  .cta{ position:absolute; left:50%; bottom:-48px; transform: translateX(-50%);
-    background:#2a2a2a; color:#fff; border:none; border-radius:8px; padding:10px 16px; font-size:clamp(14px,3.6vw,16px);
-    letter-spacing:.3px; cursor:pointer; box-shadow:0 8px 20px rgba(0,0,0,.18); transition: transform .2s ease, box-shadow .2s ease; }
-  .cta:active{ transform: translateX(-50%) scale(.97); box-shadow:0 6px 16px rgba(0,0,0,.18); }
-  .env-shadow{ position:absolute; inset:auto 10% -20% 10%; height:22%; filter: blur(18px); background: radial-gradient(60% 60% at 50% 30%, rgba(0,0,0,.28), rgba(0,0,0,0) 70%); }
+  @keyframes sealPulse{ 50%{ transform:translate(-50%,-50%) translateZ(1px) scale(1.04) } }
 
-  body.opening .envelope-scene{ transform: scale(1.01); }
-  body.opened .envelope-scene{ opacity:0; transform: scale(1.04); pointer-events:none; }
-  body.opening .flap{ transform: rotateX(178deg); }
+  /* Open button is below envelope, never overlaps */
+  .cta{
+    position:relative;
+    background:#2a2a2a; color:#fff; border:none; border-radius:10px;
+    padding: 12px 18px; font-size: clamp(14px, 3.8vw, 16px);
+    letter-spacing:.3px; cursor:pointer;
+    box-shadow: 0 8px 20px rgba(0,0,0,.18);
+    transition: transform .2s ease, box-shadow .2s ease;
+  }
+  .cta:active{ transform: scale(.97); box-shadow: 0 6px 16px rgba(0,0,0,.18); }
 
-  /* Cinematic reveal overlay */
+  /* Scene transitions */
+  body.opening .flap{ transform: rotateX(168deg); }
+  body.opening .envelope-scene{ transform: translateY(2px) }
+  body.opened .envelope-scene{ opacity:0; transform: translateY(6px); pointer-events:none; }
+
+  /* Cinematic reveal overlay (lighter for perf) */
   .sweep{
     position:fixed; inset:0; z-index:25; pointer-events:none; opacity:0;
-    background: radial-gradient(1200px 800px at 50% 50%, rgba(255,255,255,.9), rgba(255,255,255,.0) 60%),
-                conic-gradient(from -90deg at 50% 50%, rgba(255,140,206,.0), rgba(255,140,206,.3), rgba(187,140,255,.35), rgba(255,140,206,.0));
-    filter: blur(12px) saturate(1.2);
-    transition: opacity .8s ease;
-    mask-image: linear-gradient(180deg, black 30%, transparent 100%);
+    background: radial-gradient(800px 580px at 50% 50%, rgba(255,255,255,.8), rgba(255,255,255,0) 60%);
+    filter: blur(10px) saturate(1.15);
+    transition: opacity .6s ease;
   }
-  body.opened .sweep{ opacity:1; animation: sweepMove 1.6s ease-out forwards; }
+  body.opened .sweep{ opacity:1; animation: sweepMove 1.2s ease-out forwards; }
   @keyframes sweepMove{
-    0%{ transform: translateY(20px) scale(1.02); opacity:.2 }
-    60%{ transform: translateY(-10px) scale(1.0); opacity:.9 }
-    100%{ transform: translateY(0) scale(1); opacity:0 }
+    0%{ transform: translateY(16px) scale(1.01); opacity:.3 }
+    70%{ transform: translateY(-8px); opacity:.9 }
+    100%{ transform: translateY(0); opacity:0 }
   }
 
-  /* Party scene */
+  /* ---------------- Party Scene ---------------- */
   .party-root{
     position:fixed; inset:0; display:flex; align-items:center; justify-content:center;
-    opacity:0; transform: translateY(10px) scale(.98);
-    transition: opacity 1s ease .15s, transform 1s ease .15s;
+    opacity:0; transform: translateY(8px) scale(.985);
+    transition: opacity .8s ease .1s, transform .8s ease .1s;
     background:
-      radial-gradient(1400px 900px at 10% -10%, rgba(255,182,222,.35), transparent 60%),
-      radial-gradient(1200px 800px at 110% 120%, rgba(237,200,255,.35), transparent 60%),
+      radial-gradient(1200px 800px at 10% -10%, rgba(255,182,222,.32), transparent 60%),
+      radial-gradient(1000px 700px at 110% 120%, rgba(237,200,255,.32), transparent 60%),
       linear-gradient(180deg, var(--rose), var(--orchid) 50%, var(--lilac));
-    filter: saturate(1.15);
   }
   body.opened .party-root{ opacity:1; transform: translateY(0) scale(1); }
 
-  canvas.bg-layer{ position:fixed; inset:0; pointer-events:none; z-index:0; opacity:0; transition: opacity .9s ease .35s; }
+  canvas.bg-layer{ position:fixed; inset:0; pointer-events:none; z-index:0; opacity:0; transition: opacity .7s ease .25s; }
   body.opened canvas.bg-layer{ opacity:1; }
 
-  /* Layout blocks to prevent overlap */
+  /* Layout blocks (no overlap) */
   .content{
     position:relative; z-index:2; display:flex; flex-direction:column; align-items:center;
-    width:min(1100px, 96vw); margin:auto; padding: clamp(12px, 3vw, 18px); gap: clamp(14px, 4vw, 24px);
+    width:min(1000px, 96vw); margin:auto; padding: clamp(10px, 3vw, 18px);
+    gap: clamp(12px, 4vw, 24px);
   }
-
-  /* Heart block (separate from text) */
-  .hero-heart{
-    display:flex; align-items:center; justify-content:center; width:100%;
-    margin-top: clamp(6px, 4vw, 20px);
-  }
+  .hero-heart{ display:flex; align-items:center; justify-content:center; width:100%; margin-top: clamp(6px, 4vw, 14px); }
   .heart-wrap{
-    position:relative; display:grid; place-items:center; width: clamp(96px, 20vw, 170px); aspect-ratio:1/1;
-    cursor:pointer; user-select:none; filter: drop-shadow(0 14px 36px rgba(183,108,255,.45));
-    margin-bottom: clamp(8px, 3vw, 16px);
+    position:relative; display:grid; place-items:center; width: clamp(100px, 22vw, 170px); aspect-ratio:1/1;
+    cursor:pointer; user-select:none; filter: drop-shadow(0 12px 30px rgba(183,108,255,.42));
+    margin-bottom: clamp(6px, 3vw, 16px);
   }
   #heartBtn{ font-size: clamp(70px,17.5vw,160px); line-height:1; transform: translateZ(0) scale(1); animation: beat 1.05s ease-in-out infinite; }
   @keyframes beat{ 0%,100%{transform:scale(1)} 14%{transform:scale(1.12)} 28%{transform:scale(1)} 42%{transform:scale(1.08)} 70%{transform:scale(1)} }
 
   .heart-wrap::before{
-    content:""; position:absolute; inset:-20%; border-radius:50%;
+    content:""; position:absolute; inset:-18%; border-radius:50%;
     background: radial-gradient(circle at 50% 50%, var(--glow1) 0%, rgba(255,255,255,.75) 22%, transparent 62%);
     filter: blur(16px); animation: halo 1.8s ease-in-out infinite;
   }
@@ -124,62 +166,63 @@
   .orbit{
     position:absolute; inset:-8%; border-radius:50%; pointer-events:none;
     background:
-      radial-gradient(4px 4px at 10% 50%, rgba(255,255,255,.95), transparent 60%),
-      radial-gradient(3px 3px at 70% 20%, rgba(255,255,255,.9), transparent 60%),
-      radial-gradient(3px 3px at 80% 70%, rgba(255,255,255,.95), transparent 60%),
-      radial-gradient(2.5px 2.5px at 30% 80%, rgba(255,255,255,.9), transparent 60%);
-    filter: drop-shadow(0 0 12px rgba(255,255,255,.8));
+      radial-gradient(4px 4px at 12% 48%, rgba(255,255,255,.95), transparent 60%),
+      radial-gradient(3px 3px at 74% 22%, rgba(255,255,255,.9), transparent 60%);
+    filter: drop-shadow(0 0 12px rgba(255,255,255,.85));
     animation: orbit 2.6s linear infinite;
     mix-blend-mode: screen;
   }
   @keyframes orbit{ to{ transform: rotate(360deg) } }
 
-  /* Text card centered and separated from heart */
   .text-box{
-    background: linear-gradient(180deg, var(--glass), rgba(255,255,255,.62));
-    -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+    background: linear-gradient(180deg, var(--glass), rgba(255,255,255,.64));
+    -webkit-backdrop-filter: blur(7px); backdrop-filter: blur(7px);
     border: 1px solid var(--glass-border);
-    border-radius: 26px; box-shadow: var(--shadow);
+    border-radius: 24px; box-shadow: var(--shadow);
     padding: clamp(18px, 5vw, 32px);
-    text-align:center;
-    max-width: 820px;
-    margin: 0 auto;
+    text-align:center; max-width: 820px; margin: 0 auto;
   }
-  h1{
-    font-size: clamp(36px,7.6vw,84px); margin:0;
-    background: linear-gradient(135deg, #ff7ab6, #b76cff);
-    -webkit-background-clip:text; background-clip:text; color:transparent;
-    text-shadow: 0 1px 0 rgba(255,255,255,.85), 0 2px 0 rgba(255,255,255,.85), 0 10px 22px rgba(255,118,182,.3);
-    letter-spacing: .6px;
-  }
+  
+h1{
+  font-size: clamp(36px,7.6vw,84px); margin:0;
+  color:#4d0f3f; /* high-contrast deep rose */
+  font-weight: 800;
+  text-shadow: 0 1.5px 0 rgba(0,0,0,.06), 0 10px 22px rgba(77,15,63,.18);
+  letter-spacing: .6px;
+}
+
   #moreText{
-    white-space: pre-line;
-    font-size: clamp(18px,4.8vw,26px);
-    color: var(--ink3);
+    white-space: pre-line; font-size: clamp(18px,4.6vw,26px); color: var(--ink3);
     opacity:0; transform: translateY(10px) scale(0.99);
     transition: opacity .6s ease, transform .6s cubic-bezier(.17,.84,.44,1);
     margin-top: 12px;
   }
   #moreText.show{ opacity:1; transform: translateY(0) scale(1); }
 
+  /* Reduce motion for users who prefer it */
+  @media (prefers-reduced-motion: reduce){
+    .flap, .heart-wrap::before, .orbit, #heartBtn, .sweep{ animation: none !important; transition: none !important; }
+  }
 </style>
 </head>
 <body>
   <!-- Envelope Scene -->
   <div class="envelope-scene" id="envelopeScene" aria-live="polite">
-    <div class="envelope-wrap">
-      <div class="envelope">
-        <div class="flap" id="flap"></div>
-        <div class="letter">
-          <div>
-            <div style="font-weight:700; font-size:clamp(18px,4.6vw,20px); color:#333;">A letter for you</div>
-            <div style="margin-top:8px; color:#666;">Tap to open</div>
+    <div class="env-stack">
+      <div class="envelope-wrap">
+        <div class="envelope">
+          <div class="pocket"></div>
+          <div class="flap" id="flap"></div>
+          <div class="letter">
+            <div>
+              <div style="font-weight:700; font-size:clamp(18px,4.6vw,20px); color:#333;">A letter for you</div>
+              
+            </div>
           </div>
+          <div class="seal"></div>
         </div>
-        <div class="seal"></div>
-        <button class="cta" id="openBtn" aria-label="Open the envelope">Open</button>
       </div>
-      <div class="env-shadow" aria-hidden="true"></div>
+      <button class="cta" id="openBtn" aria-label="Open the envelope">Open</button>
     </div>
   </div>
 
@@ -192,7 +235,6 @@
     <canvas id="confetti" class="bg-layer"></canvas>
 
     <div class="content" aria-live="polite">
-      <!-- Heart on top center as its own block -->
       <div class="hero-heart">
         <div class="heart-wrap" id="heartWrap" aria-label="Heart">
           <div class="orbit" aria-hidden="true"></div>
@@ -200,7 +242,6 @@
         </div>
       </div>
 
-      <!-- Text card below heart -->
       <div class="text-box">
         <h1 id="headline">Happy Birthday My Love</h1>
         <div id="moreText">My heart beats happiest with you 💕
@@ -217,22 +258,33 @@ const envelopeScene = document.getElementById('envelopeScene');
 let opened = false, rafStarted = false;
 function openEnvelope(){
   if(opened) return; opened = true;
-  document.body.classList.add('opening'); flap.style.transform = 'rotateX(178deg)';
+  document.body.classList.add('opening');
+  flap.style.transform = 'rotateX(168deg)'; // gentler angle to avoid 3D tearing
   setTimeout(()=>{
     document.body.classList.remove('opening'); document.body.classList.add('opened');
-    if(!rafStarted){ rafStarted = true; startParty(); setTimeout(()=> popAt(innerWidth/2, innerHeight/1.18, 1.2), 650); }
-  }, 480);
+    if(!rafStarted){ rafStarted = true; startParty(); setTimeout(()=> popAt(innerWidth/2, innerHeight/1.18, 1.0), 500); }
+  }, 420);
 }
 openBtn.addEventListener('click', openEnvelope, {passive:true});
-envelopeScene.addEventListener('click', (e)=>{ if(e.target === openBtn) return; openEnvelope(); }, {passive:true});
+envelopeScene.addEventListener('click', (e)=>{
+  // Click anywhere on envelope stack also opens; button stays separate to avoid overlap
+  if(e.target.id === 'openBtn') return;
+  if(!e.target.closest('.envelope-wrap')) return;
+  openEnvelope();
+}, {passive:true});
 
-/* Renderer */
+/* Renderer perf tuning */
 const ua = navigator.userAgent;
 const isIOS = /iP(hone|ad|od)/i.test(ua);
 const isAndroid = /Android/i.test(ua);
 const isMobile = isIOS || isAndroid;
-const DPR_CAP = isIOS ? 1.0 : 1.4;
+/* Lower DPR caps for smoothness on phones */
+const DPR_CAP = isIOS ? 0.8 : 1.0;
 const DPR = Math.min(DPR_CAP, window.devicePixelRatio || 1);
+/* Lower counts for mobile */
+let SPRITE_COUNT = isMobile ? 26 : 70;
+let MAX_PIECES   = isMobile ? 160 : 320;
+
 let running = true;
 document.addEventListener('visibilitychange', () => { running = !document.hidden; });
 
@@ -240,12 +292,12 @@ document.addEventListener('visibilitychange', () => { running = !document.hidden
 const EMOJIS = ["💖","💗","💜","✨","🌟","⭐","🌙","☁️","☁️","😘","😚","💋","✨","💖","💗"];
 
 const glyphCache = new Map();
-const CACHE_LIMIT = 96;
+const CACHE_LIMIT = 72;
 function makeEmojiCanvas(char, size){
   const c = document.createElement('canvas');
-  const pad = Math.ceil(size*0.35);
+  const pad = Math.ceil(size*0.30);
   c.width = c.height = (size + pad*2);
-  const g = c.getContext('2d');
+  const g = c.getContext('2d', { willReadFrequently: false });
   g.textAlign = 'center'; g.textBaseline = 'middle';
   g.font = size + 'px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",emoji, serif';
   g.fillText(char, c.width/2, c.height/2);
@@ -264,51 +316,82 @@ function getGlyph(char, size){
 }
 
 let bg, ctx, conf, c2, W=0,H=0,cx=0,cy=0, W2=0,H2=0;
-let sprites=[], SPRITE_COUNT = isMobile ? 42 : 95;
-let pieces=[], MAX_PIECES = isMobile ? 240 : 460;
+let sprites=[], pieces=[];
+
 function setupCanvases(){
-  bg = document.getElementById('bg'); ctx = bg.getContext('2d', { alpha:true });
-  conf = document.getElementById('confetti'); c2 = conf.getContext('2d', { alpha:true });
-  function resizeBG(){ let w = innerWidth, h = innerHeight; bg.style.width = innerWidth + 'px'; bg.style.height = innerHeight + 'px';
-    bg.width = Math.floor(w * DPR); bg.height = Math.floor(h * DPR); ctx.setTransform(DPR,0,0,DPR,0,0); W=w; H=h; cx=W/2; cy=H/2; }
-  function resizeC(){ let w = innerWidth, h = innerHeight; conf.style.width = innerWidth + 'px'; conf.style.height = innerHeight + 'px';
-    conf.width = Math.floor(w * DPR); conf.height = Math.floor(h * DPR); c2.setTransform(DPR,0,0,DPR,0,0); W2=w; H2=h; }
-  resizeBG(); resizeC(); addEventListener('resize', ()=>{ resizeBG(); resizeC(); }, {passive:true});
+  bg = document.getElementById('bg');
+  ctx = bg.getContext('2d', { alpha:true });
+  conf = document.getElementById('confetti');
+  c2 = conf.getContext('2d', { alpha:true });
+
+  function resizeAll(){
+    let w = innerWidth, h = innerHeight;
+    for(const c of [bg, conf]){
+      c.style.width = w + 'px'; c.style.height = h + 'px';
+      c.width = Math.floor(w * DPR); c.height = Math.floor(h * DPR);
+    }
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+    c2.setTransform(DPR,0,0,DPR,0,0);
+    W=w; H=h; cx=W/2; cy=H/2; W2=w; H2=h;
+  }
+  resizeAll();
+  addEventListener('resize', resizeAll, {passive:true});
 }
+
 function resetSprite(s){
-  s.angle=Math.random()*Math.PI*2; s.radius=0.35+Math.random()*1; s.z=1+Math.random()*3.2;
-  s.char=EMOJIS[(Math.random()*EMOJIS.length)|0]; s.size=(isMobile?18:18)+Math.random()*24;
-  s.spin=(Math.random()<.5?-1:1)*(0.0009+Math.random()*0.0026); s.speed=(isMobile?0.011:0.009)+Math.random()*0.015; return s;
+  s.angle=Math.random()*Math.PI*2;
+  s.radius=0.35+Math.random()*1;
+  s.z=1+Math.random()*3.2;
+  s.char=EMOJIS[(Math.random()*EMOJIS.length)|0];
+  s.size=(isMobile?18:18)+Math.random()*22;
+  s.spin=(Math.random()<.5?-1:1)*(0.0008+Math.random()*0.0022);
+  s.speed=(isMobile?0.010:0.009)+Math.random()*0.013;
+  return s;
 }
-function initSprites(){ sprites.length = 0; for(let i=0;i<SPRITE_COUNT;i++){ sprites.push(resetSprite({})); } }
-let last=0;
-function loopBG(now){
+function initSprites(){
+  sprites.length = 0;
+  for(let i=0;i<SPRITE_COUNT;i++){ sprites.push(resetSprite({})); }
+}
+
+function loopBG(){
   if(!running){ requestAnimationFrame(loopBG); return; }
-  if(!last) last = now; ctx.clearRect(0,0,W,H);
+  ctx.clearRect(0,0,W,H);
   for(const s of sprites){
-    s.angle+=s.spin; s.z-=s.speed; if(s.z<=0.05) resetSprite(s), s.z=3.2;
-    const tubeR=Math.min(W,H)*0.44; const k=tubeR*s.radius/s.z;
-    const x=cx+Math.cos(s.angle)*k; const y=cy+Math.sin(s.angle)*k; const size=s.size*(1.5/s.z);
-    const glyph = getGlyph(s.char, size); ctx.drawImage(glyph, x - glyph.width/2, y - glyph.height/2);
+    s.angle+=s.spin; s.z-=s.speed;
+    if(s.z<=0.05) resetSprite(s), s.z=3.2;
+    const tubeR=Math.min(W,H)*0.44;
+    const k=tubeR*s.radius/s.z;
+    const x=cx+Math.cos(s.angle)*k;
+    const y=cy+Math.sin(s.angle)*k;
+    const size=s.size*(1.4/s.z);
+    const glyph = getGlyph(s.char, size);
+    ctx.drawImage(glyph, x - glyph.width/2, y - glyph.height/2);
   }
   requestAnimationFrame(loopBG);
 }
-function addConfetti(n=80, origin={x:innerWidth/2,y:innerHeight/2}){
-  const count = isMobile ? Math.floor(n*0.75) : n;
+
+function addConfetti(n=70, origin={x:innerWidth/2,y:innerHeight/2}){
+  const count = isMobile ? Math.floor(n*0.65) : n;
   for(let i=0;i<count;i++){
     const char = EMOJIS[(Math.random()*EMOJIS.length)|0];
-    pieces.push({x:origin.x,y:origin.y, vx:(Math.random()*2-1)*5.6, vy:(Math.random()*-1-1)*6.3, g:0.18+Math.random()*0.08,
-      char, size:(isMobile?20:22)+Math.random()*22, life:(isMobile?120:160)+Math.random()*110 });
+    pieces.push({x:origin.x,y:origin.y,
+      vx:(Math.random()*2-1)*5.2, vy:(Math.random()*-1-1)*6.0,
+      g:0.17+Math.random()*0.08, char,
+      size:(isMobile?18:20)+Math.random()*20,
+      life:(isMobile?110:150)+Math.random()*100
+    });
   }
   if(pieces.length > MAX_PIECES) pieces.splice(0, pieces.length - MAX_PIECES);
 }
+
 function loopConfetti(){
   if(!running){ requestAnimationFrame(loopConfetti); return; }
   c2.clearRect(0,0,W2,H2);
   pieces=pieces.filter(p=>(p.life-=1)>0 && p.y<H2+40);
   for(const p of pieces){
     p.vy+=p.g; p.x+=p.vx; p.y+=p.vy;
-    const glyph = getGlyph(p.char, p.size); c2.drawImage(glyph, p.x - glyph.width/2, p.y - glyph.height/2);
+    const glyph = getGlyph(p.char, p.size);
+    c2.drawImage(glyph, p.x - glyph.width/2, p.y - glyph.height/2);
   }
   requestAnimationFrame(loopConfetti);
 }
@@ -317,19 +400,19 @@ function loopConfetti(){
 const heartWrap = document.getElementById('heartWrap');
 const moreText = document.getElementById('moreText');
 function heartCenter(){ const rect = heartWrap.getBoundingClientRect(); return { x: rect.left + rect.width/2, y: rect.top + rect.height/2 }; }
-function popAt(x,y,scale=1){ addConfetti(Math.round((isMobile?56:80)*scale), {x,y}); }
+function popAt(x,y,scale=1){ addConfetti(Math.round((isMobile?50:70)*scale), {x,y}); }
 function sparkleBurst(x,y){
-  const n = 14;
+  const n = 10;
   for(let i=0;i<n;i++){
     const s = document.createElement('div'); s.className='spark';
-    s.style.position='fixed'; s.style.width='7px'; s.style.height='7px';
+    s.style.position='fixed'; s.style.width='6px'; s.style.height='6px';
     s.style.background='radial-gradient(circle, #fff 0 35%, rgba(255,255,255,0) 70%)';
     s.style.borderRadius='50%'; s.style.pointerEvents='none'; s.style.zIndex='3';
     s.style.filter='drop-shadow(0 0 10px #fff)';
-    const a = Math.random()*Math.PI*2, r = 8 + Math.random()*28;
+    const a = Math.random()*Math.PI*2, r = 8 + Math.random()*24;
     s.style.left = (x + Math.cos(a)*4) + 'px'; s.style.top  = (y + Math.sin(a)*4) + 'px';
     document.body.appendChild(s);
-    const dx = Math.cos(a)*r, dy = Math.sin(a)*r, life = 560 + Math.random()*360;
+    const dx = Math.cos(a)*r, dy = Math.sin(a)*r, life = 520 + Math.random()*300;
     const start = performance.now();
     (function anim(t){
       const k = Math.min(1, (t-start)/life);
@@ -340,26 +423,30 @@ function sparkleBurst(x,y){
 }
 function bindPartyEvents(){
   heartWrap.addEventListener('click',()=>{
-    const {x,y} = heartCenter();
-    sparkleBurst(x,y);
-    popAt(innerWidth/2, innerHeight/2.05, 2.2);
-    // Reveal exact text under headline
-    moreText.classList.add('show');
+    const c = heartCenter();
+    sparkleBurst(c.x, c.y);
+    popAt(innerWidth/2, innerHeight/2.05, 1.8);
+    moreText.classList.add('show'); // reveal exact message
   }, {passive:true});
 
   // Optional confetti taps elsewhere
-  document.addEventListener('click',e=>{ if(heartWrap.contains(e.target)) return; popAt(e.clientX, e.clientY, 1); }, {passive:true});
-
-  let touching=false, lastPop=0;
-  document.addEventListener('pointerdown', e=>{ touching=true; sparkleBurst(e.clientX, e.clientY); popAt(e.clientX, e.clientY, 1.1); }, {passive:true});
-  document.addEventListener('pointermove', e=>{ if(!touching) return; const now = performance.now();
-    if(now - lastPop > 90){ lastPop = now; popAt(e.clientX, e.clientY, 0.55); } }, {passive:true});
-  document.addEventListener('pointerup', ()=>{ touching=false; }, {passive:true});
-  document.addEventListener('pointercancel', ()=>{ touching=false; }, {passive:true});
+  document.addEventListener('click',e=>{
+    if(heartWrap.contains(e.target)) return;
+    popAt(e.clientX, e.clientY, 1);
+  }, {passive:true});
 }
 
 /* Start renderers after envelope opens */
-function startParty(){ setupCanvases(); initSprites(); requestAnimationFrame(loopBG); requestAnimationFrame(loopConfetti); bindPartyEvents(); }
+function startParty(){
+  setupCanvases();
+  initSprites();
+  requestAnimationFrame(loopBG);
+  requestAnimationFrame(loopConfetti);
+  bindPartyEvents();
+}
+
+/* Minor fix for iOS momentum scroll repaint */
+document.addEventListener('touchmove', ()=>{}, {passive:true});
 </script>
 </body>
 </html>
