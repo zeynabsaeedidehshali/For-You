@@ -6,11 +6,11 @@
 <title>💖 Happy Birthday, My Love</title>
 <style>
   :root{
-    --rose:#ffd6f0; --orchid:#f5c2ff; --lilac:#d8b4fe; --plum:#b28fff;
-    --ink1:#5a0f49; --ink2:#6c2a5e; --ink3:#5b1c51;
-    --glass: rgba(255,255,255,.72);
-    --glass-border: rgba(255,255,255,.85);
-    --shadow: 0 20px 60px rgba(91,28,81,.18), 0 4px 18px rgba(91,28,81,.12);
+    --rose:#ffd6f0; --orchid:#f5c2ff; --lilac:#d8b4fe;
+    --ink1:#511041; --ink2:#6c2a5e; --ink3:#5b1c51;
+    --glass: rgba(255,255,255,.78);
+    --glass-border: rgba(255,255,255,.9);
+    --shadow: 0 16px 44px rgba(91,28,81,.16), 0 3px 12px rgba(91,28,81,.10);
   }
   *{box-sizing:border-box}
   html,body{height:100%}
@@ -18,99 +18,132 @@
     margin:0; overflow:hidden; touch-action: manipulation;
     display:grid; place-items:center;
     background:
-      radial-gradient(1200px 800px at 20% -10%, rgba(245,194,255,.35), transparent 60%),
-      radial-gradient(1000px 700px at 120% 120%, rgba(216,180,254,.35), transparent 60%),
+      radial-gradient(1200px 800px at 20% -10%, rgba(245,194,255,.32), transparent 60%),
+      radial-gradient(1000px 700px at 120% 120%, rgba(216,180,254,.32), transparent 60%),
       linear-gradient(180deg, var(--rose), var(--orchid) 50%, var(--lilac));
-    font-family: ui-rounded, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-family: ui-rounded, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji", emoji, sans-serif;
   }
-  body::after{
-    content:""; position:fixed; inset:0; pointer-events:none;
-    background: radial-gradient(60% 60% at 50% 50%, rgba(0,0,0,0) 0 60%, rgba(0,0,0,.08) 100%);
-    z-index:0;
+  body::after{ content:""; position:fixed; inset:0; pointer-events:none;
+    background: radial-gradient(60% 60% at 50% 50%, rgba(0,0,0,0) 0 60%, rgba(0,0,0,.08) 100%); z-index:0;
   }
   canvas.bg-layer{ position:fixed; inset:0; pointer-events:none; z-index:0; }
-  .aurora{ position:fixed; inset:0; z-index:0; pointer-events:none; }
-  .blob{ position:absolute; filter: blur(40px); opacity:.35; mix-blend-mode:screen; border-radius:50%; animation: drift 18s ease-in-out infinite alternate; }
-  .blob.one{ width:38vw; height:38vw; left:-8vw; top:10vh; background: radial-gradient(circle at 30% 30%, #fff 0 20%, #ffd6f0 35%, transparent 70%); }
-  .blob.two{ width:46vw; height:46vw; right:-12vw; bottom:-8vh; background: radial-gradient(circle at 70% 70%, #fff 0 12%, #c9b1ff 35%, transparent 70%); animation-duration: 22s }
-  @keyframes drift{ from{transform:translateY(-12px)} to{transform:translateY(12px)} }
-  .content{ position:relative; z-index:2; display:flex; flex-direction:column; align-items:center; gap:18px; padding:10px; width:min(1100px, 96vw); }
-  .text-box{ background: linear-gradient(180deg, var(--glass), rgba(255,255,255,.62)); backdrop-filter: blur(8px); border: 1px solid var(--glass-border); border-radius: 26px; box-shadow: var(--shadow); padding: clamp(18px, 4vw, 32px); text-align:center; }
-  h1{ font-size: clamp(34px,7.4vw,76px); margin:0; background: linear-gradient(135deg, #b76cff, #ff7ab6); -webkit-background-clip:text; background-clip:text; color:transparent; text-shadow: 0 2px 16px rgba(255,118,182,.25); }
-  p.lead{ font-size: clamp(18px,4vw,28px); margin:10px 0 16px; color:var(--ink2); }
-  #msg{ font-size: clamp(20px,4.5vw,32px); color:var(--ink3); opacity:0; transform:translateY(12px); transition:opacity .6s ease, transform .6s ease; }
+
+  .content{ position:relative; z-index:2; display:flex; flex-direction:column; align-items:center; gap:16px; padding:10px; width:min(1100px, 96vw); }
+  .text-box{
+    background: linear-gradient(180deg, var(--glass), rgba(255,255,255,.62));
+    -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px; box-shadow: var(--shadow);
+    padding: clamp(16px, 4vw, 28px); text-align:center;
+  }
+  h1{
+    font-size: clamp(32px,7.2vw,74px); margin:0;
+    background: linear-gradient(135deg, #b76cff, #ff7ab6);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    text-shadow: 0 2px 14px rgba(255,118,182,.25);
+  }
+  .emoji{ font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",emoji; vertical-align:-.08em; }
+  p.lead{ font-size: clamp(18px,4vw,28px); margin:10px 0 14px; color:var(--ink2); }
+  #msg{ font-size: clamp(20px,4.5vw,32px); color:var(--ink3); opacity:0; transform:translateY(10px); transition:opacity .5s ease, transform .5s ease; }
   #msg.show{ opacity:1; transform:translateY(0) }
-  #heartBtn{ font-size: clamp(60px,15vw,140px); cursor:pointer; user-select:none; filter: drop-shadow(0 10px 30px rgba(183,108,255,.28)); animation: pulse 1.6s ease-in-out infinite, float 4.5s ease-in-out infinite; }
-  @keyframes pulse{ 0%,100%{transform:scale(1)} 50%{transform:scale(1.15)} }
+  #heartBtn{ font-size: clamp(58px,14vw,130px); cursor:pointer; user-select:none;
+    filter: drop-shadow(0 10px 26px rgba(183,108,255,.26));
+    animation: pulse 1.6s ease-in-out infinite, float 4.5s ease-in-out infinite;
+  }
+  @keyframes pulse{ 0%,100%{transform:scale(1)} 50%{transform:scale(1.13)} }
   @keyframes float{ 0%,100%{ translate:0 0 } 50%{ translate:0 -6px } }
 </style>
 </head>
 <body>
-  <div class="aurora"><div class="blob one"></div><div class="blob two"></div></div>
   <canvas id="bg" class="bg-layer"></canvas>
   <canvas id="confetti" class="bg-layer"></canvas>
 
   <div class="content" aria-live="polite">
-    <div id="heartBtn" aria-label="Heart">💖</div>
+    <div id="heartBtn" aria-label="Heart" class="emoji">💗</div>
     <div class="text-box">
-      <h1>Happy Birthday, my love 💖</h1>
-      <p class="lead">My heart beats happiest with you 💕</p>
-      <div id="msg">I love you more than all the stars ✨, all the songs 🎶, and every heartbeat ❤️. Happy Birthday, my forever. 💕💜💘😘</div>
+      <h1>Happy Birthday, my love <span class="emoji">💗</span></h1>
+      <p class="lead">My heart beats happiest with you <span class="emoji">💕</span></p>
+      <div id="msg">I love you more than all the stars <span class="emoji">✨</span>, all the songs <span class="emoji">🎶</span>, and every heartbeat <span class="emoji">❤️</span>. Happy Birthday, my forever. <span class="emoji">💕💜💘😘</span></div>
     </div>
   </div>
 
 <script>
-const isMobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
-const DPR = Math.min(1.5, (window.devicePixelRatio || 1));
+// ---- Adaptive performance & mobile safety ----
+const ua = navigator.userAgent;
+const isIOS = /iP(hone|ad|od)/i.test(ua);
+const isAndroid = /Android/i.test(ua);
+const isMobile = isIOS || isAndroid;
+const DPR_CAP = isIOS ? 1.0 : 1.3; // keep low on iOS Safari to prevent reloads
+const DPR = Math.min(DPR_CAP, window.devicePixelRatio || 1);
 let running = true;
 document.addEventListener('visibilitychange', () => { running = !document.hidden; });
 
+// ---- Emoji glyph cache with limited size ----
+const EMOJIS = ["❤️","💖","💜","💕","💘","💞","😘","😚","😙","😗","☁️","🌥️","🌤️","🌙","⭐","✨","🌟"];
+const glyphCache = new Map();
+const CACHE_LIMIT = 64;
 function makeEmojiCanvas(char, size){
   const c = document.createElement('canvas');
   const pad = Math.ceil(size*0.35);
   c.width = c.height = (size + pad*2);
   const g = c.getContext('2d');
   g.textAlign = 'center'; g.textBaseline = 'middle';
-  g.font = size + 'px serif';
+  g.font = size + 'px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",emoji, serif';
   g.fillText(char, c.width/2, c.height/2);
   return c;
 }
-const glyphCache = new Map();
 function getGlyph(char, size){
   const key = char + '@' + Math.round(size);
-  if(!glyphCache.has(key)){ glyphCache.set(key, makeEmojiCanvas(char, Math.round(size))); }
+  if(!glyphCache.has(key)){
+    if(glyphCache.size > CACHE_LIMIT){ // simple eviction: clear oldest
+      const firstKey = glyphCache.keys().next().value;
+      glyphCache.delete(firstKey);
+    }
+    glyphCache.set(key, makeEmojiCanvas(char, Math.round(size)));
+  }
   return glyphCache.get(key);
 }
 
-// Background tunnel
+// ---- Canvas sizing helpers (cap dimensions to reduce memory) ----
+function capSize(w,h,max=1400){
+  const scale = Math.min(1, max/Math.max(w,h));
+  return [Math.floor(w*scale), Math.floor(h*scale)];
+}
+
+// ---- Background tunnel ----
 const bg = document.getElementById('bg');
 const ctx = bg.getContext('2d');
-let W,H,cx,cy;
+let W=0,H=0,cx=0,cy=0;
 function resizeBG(){
-  const w = innerWidth, h = innerHeight;
-  bg.style.width = w + 'px'; bg.style.height = h + 'px';
+  let w = innerWidth, h = innerHeight;
+  [w,h] = capSize(w,h, 1280); // cap to 1280 px canvas
+  bg.style.width = innerWidth + 'px'; bg.style.height = innerHeight + 'px';
   bg.width = Math.floor(w * DPR); bg.height = Math.floor(h * DPR);
   ctx.setTransform(DPR,0,0,DPR,0,0);
   W=w; H=h; cx=W/2; cy=H/2;
 }
 resizeBG(); addEventListener('resize',resizeBG, {passive:true});
 
-const EMOJIS = ["❤️","💖","💜","💕","💘","💞","😘","😚","😙","😗","☁️","🌥️","🌤️","🌙","⭐","✨","🌟"];
 let sprites = [];
-const SPRITE_COUNT = isMobile ? 88 : 138;
-for(let i=0;i<SPRITE_COUNT;i++){ sprites.push(resetSprite({})); }
+let SPRITE_COUNT = isMobile ? 60 : 110; // fewer sprites
 function resetSprite(s){
   s.angle=Math.random()*Math.PI*2;
   s.radius=0.35+Math.random()*1;
   s.z=1+Math.random()*3.2;
   s.char=EMOJIS[(Math.random()*EMOJIS.length)|0];
-  s.size=(isMobile?16:18)+Math.random()*26;
-  s.spin=(Math.random()<.5?-1:1)*(0.0012+Math.random()*0.0035);
-  s.speed=(isMobile?0.012:0.010)+Math.random()*0.016;
+  s.size=(isMobile?16:18)+Math.random()*24;
+  s.spin=(Math.random()<.5?-1:1)*(0.0011+Math.random()*0.0032);
+  s.speed=(isMobile?0.011:0.009)+Math.random()*0.015;
   return s;
 }
-function loopBG(){
+for(let i=0;i<SPRITE_COUNT;i++){ sprites.push(resetSprite({})); }
+
+let last = performance.now();
+function loopBG(now){
   if(!running){ requestAnimationFrame(loopBG); return; }
+  // Adaptive load shedding: if frame took too long, temporarily drop sprites
+  const dt = now - last; last = now;
+  if(dt > 28 && SPRITE_COUNT > (isMobile?40:80)){ sprites.length = SPRITE_COUNT -= 2; }
   ctx.clearRect(0,0,W,H);
   for(const s of sprites){
     s.angle+=s.spin; s.z-=s.speed;
@@ -127,13 +160,14 @@ function loopBG(){
 }
 requestAnimationFrame(loopBG);
 
-// Confetti bursts
+// ---- Confetti (touch pops) ----
 const conf=document.getElementById('confetti');
 const c2=conf.getContext('2d');
-let W2,H2;
+let W2=0,H2=0;
 function resizeC(){
-  const w = innerWidth, h = innerHeight;
-  conf.style.width = w + 'px'; conf.style.height = h + 'px';
+  let w = innerWidth, h = innerHeight;
+  [w,h] = capSize(w,h, 1280);
+  conf.style.width = innerWidth + 'px'; conf.style.height = innerHeight + 'px';
   conf.width = Math.floor(w * DPR); conf.height = Math.floor(h * DPR);
   c2.setTransform(DPR,0,0,DPR,0,0);
   W2=w; H2=h;
@@ -141,17 +175,17 @@ function resizeC(){
 resizeC(); addEventListener('resize',resizeC, {passive:true});
 
 let pieces=[];
-const MAX_PIECES = isMobile ? 480 : 840;
-function addConfetti(n=96, origin={x:innerWidth/2,y:innerHeight/2}){
+let MAX_PIECES = isMobile ? 300 : 600;
+function addConfetti(n=80, origin={x:innerWidth/2,y:innerHeight/2}){
   const count = isMobile ? Math.floor(n*0.7) : n;
   for(let i=0;i<count;i++){
     const char = EMOJIS[(Math.random()*EMOJIS.length)|0];
     pieces.push({x:origin.x,y:origin.y,
-      vx:(Math.random()*2-1)*6.0, vy:(Math.random()*-1-1)*7.0,
-      g:0.20+Math.random()*0.09,
+      vx:(Math.random()*2-1)*5.8, vy:(Math.random()*-1-1)*6.6,
+      g:0.19+Math.random()*0.08,
       char,
-      size:(isMobile?22:24)+Math.random()*26,
-      life:(isMobile?120:150)+Math.random()*120
+      size:(isMobile?20:22)+Math.random()*24,
+      life:(isMobile?110:140)+Math.random()*110
     });
   }
   if(pieces.length > MAX_PIECES) pieces.splice(0, pieces.length - MAX_PIECES);
@@ -169,49 +203,24 @@ function loopConfetti(){
 }
 requestAnimationFrame(loopConfetti);
 
-// Interaction: click + TOUCH ANYWHERE pops
+// ---- Interaction (tap + swipe) ----
 const btn=document.getElementById('heartBtn');
 const msg=document.getElementById('msg');
-
-function popAt(x,y,scale=1){
-  addConfetti(Math.round((isMobile?64:88)*scale), {x,y});
-}
-
-// button tap
-btn.addEventListener('click',()=>{
-  msg.classList.add('show');
-  popAt(innerWidth/2, innerHeight/2.08, 2.2);
-}, {passive:true});
-
-// legacy click for desktops
-document.addEventListener('click',e=>{
-  if(e.target===btn) return;
-  popAt(e.clientX, e.clientY, 1);
-}, {passive:true});
-
-// pointer down = touch anywhere
-let isTouching = false;
-let lastPop = 0;
-document.addEventListener('pointerdown', e=>{
-  isTouching = true;
-  popAt(e.clientX, e.clientY, 1.2);
-}, {passive:true});
-
-// swipe trail (throttled)
+function popAt(x,y,scale=1){ addConfetti(Math.round((isMobile?56:80)*scale), {x,y}); }
+btn.addEventListener('click',()=>{ msg.classList.add('show'); popAt(innerWidth/2, innerHeight/2.05, 2.0); }, {passive:true});
+document.addEventListener('click',e=>{ if(e.target===btn) return; popAt(e.clientX, e.clientY, 1); }, {passive:true});
+let touching=false, lastPop=0;
+document.addEventListener('pointerdown', e=>{ touching=true; popAt(e.clientX, e.clientY, 1.1); }, {passive:true});
 document.addEventListener('pointermove', e=>{
-  if(!isTouching) return;
+  if(!touching) return;
   const now = performance.now();
-  if(now - lastPop > 70){ // throttle to ~14 pops/sec
-    lastPop = now;
-    popAt(e.clientX, e.clientY, 0.6);
-  }
+  if(now - lastPop > 80){ lastPop = now; popAt(e.clientX, e.clientY, 0.55); }
 }, {passive:true});
-
-document.addEventListener('pointerup', ()=>{ isTouching = false; }, {passive:true});
-document.addEventListener('pointercancel', ()=>{ isTouching = false; }, {passive:true});
+document.addEventListener('pointerup', ()=>{ touching=false; }, {passive:true});
+document.addEventListener('pointercancel', ()=>{ touching=false; }, {passive:true});
 
 // gentle intro
-setTimeout(()=> popAt(innerWidth/2, innerHeight/1.22, 1.1), 700);
+setTimeout(()=> popAt(innerWidth/2, innerHeight/1.18, 1.0), 650);
 </script>
 </body>
 </html>
