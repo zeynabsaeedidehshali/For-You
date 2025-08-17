@@ -421,20 +421,65 @@ function sparkleBurst(x,y){
     })(start);
   }
 }
+
 function bindPartyEvents(){
+  // Click on heart: reveal text + big pop
   heartWrap.addEventListener('click',()=>{
-    const c = heartCenter();
-    sparkleBurst(c.x, c.y);
-    popAt(innerWidth/2, innerHeight/2.05, 1.8);
-    moreText.classList.add('show'); // reveal exact message
+    const rect = heartWrap.getBoundingClientRect();
+    const x = rect.left + rect.width/2, y = rect.top + rect.height/2;
+    sparkleBurst(x, y);
+    popAt(innerWidth/2, innerHeight/2.05, 2.2);
+    moreText.classList.add('show');
   }, {passive:true});
 
-  // Optional confetti taps elsewhere
-  document.addEventListener('click',e=>{
-    if(heartWrap.contains(e.target)) return;
-    popAt(e.clientX, e.clientY, 1);
-  }, {passive:true});
+  // Taps/clicks elsewhere: small confetti pop
+  document.addEventListener('click',e=>{ if(heartWrap.contains(e.target)) return; popAt(e.clientX, e.clientY, 1); }, {passive:true});
+
+  if ('PointerEvent' in window){
+    // Pointer events path (modern phones & browsers)
+    let touching=false, lastPop=0;
+    document.addEventListener('pointerdown', e=>{
+      touching=true;
+      sparkleBurst(e.clientX, e.clientY);
+      popAt(e.clientX, e.clientY, 1.1);
+    }, {passive:true});
+    document.addEventListener('pointermove', e=>{
+      if(!touching) return;
+      const now = performance.now();
+      if(now - lastPop > 70){
+        lastPop = now;
+        popAt(e.clientX, e.clientY, 0.5);
+      }
+    }, {passive:true});
+    document.addEventListener('pointerup', ()=>{ touching=false; }, {passive:true});
+    document.addEventListener('pointercancel', ()=>{ touching=false; }, {passive:true});
+  } else {
+    // Touch events fallback (older mobile Safari/Android WebView)
+    let touching=false, lastPop=0;
+    function tp(e){
+      const t = (e.touches && e.touches[0]) || (e.changedTouches && e.changedTouches[0]);
+      return t ? {x:t.clientX, y:t.clientY} : {x:innerWidth/2, y:innerHeight/2};
+    }
+    document.addEventListener('touchstart', e=>{
+      touching=true;
+      const {x,y} = tp(e);
+      sparkleBurst(x,y);
+      popAt(x,y,1.1);
+    }, {passive:true});
+    document.addEventListener('touchmove', e=>{
+      if(!touching) return;
+      const now = performance.now();
+      if(now - lastPop > 70){
+        lastPop = now;
+        const {x,y} = tp(e);
+        popAt(x,y,0.5);
+      }
+    }, {passive:true});
+    document.addEventListener('touchend', ()=>{ touching=false; }, {passive:true});
+    document.addEventListener('touchcancel', ()=>{ touching=false; }, {passive:true});
+  }
 }
+
 
 /* Start renderers after envelope opens */
 function startParty(){
