@@ -6,67 +6,50 @@
 <title>💖 Happy Birthday, My Love</title>
 <style>
   :root{
-    --bg1:#ffd6f0; --bg2:#f5c2ff; --bg3:#d8b4fe;
-    --ink1:#7a115f; --ink2:#5c1851; --ink3:#6a124e;
+    --rose:#ffd6f0; --orchid:#f5c2ff; --lilac:#d8b4fe; --plum:#b28fff;
+    --ink1:#5a0f49; --ink2:#6c2a5e; --ink3:#5b1c51;
+    --glass: rgba(255,255,255,.72);
+    --glass-border: rgba(255,255,255,.85);
+    --shadow: 0 20px 60px rgba(91,28,81,.18), 0 4px 18px rgba(91,28,81,.12);
   }
   *{box-sizing:border-box}
   html,body{height:100%}
   body{
-    margin:0; overflow:hidden;
-    display:flex; align-items:center; justify-content:center; flex-direction:column;
-    background: radial-gradient(circle at center, var(--bg1) 0%, var(--bg2) 45%, var(--bg3) 100%);
+    margin:0; overflow:hidden; touch-action: manipulation;
+    display:grid; place-items:center;
+    background:
+      radial-gradient(1200px 800px at 20% -10%, rgba(245,194,255,.35), transparent 60%),
+      radial-gradient(1000px 700px at 120% 120%, rgba(216,180,254,.35), transparent 60%),
+      linear-gradient(180deg, var(--rose), var(--orchid) 50%, var(--lilac));
     font-family: ui-rounded, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   }
+  body::after{
+    content:""; position:fixed; inset:0; pointer-events:none;
+    background: radial-gradient(60% 60% at 50% 50%, rgba(0,0,0,0) 0 60%, rgba(0,0,0,.08) 100%);
+    z-index:0;
+  }
   canvas.bg-layer{ position:fixed; inset:0; pointer-events:none; z-index:0; }
-
-  /* Foreground */
-  .content{
-    position:relative; z-index:2;
-    display:flex; align-items:center; justify-content:center; flex-direction:column;
-    gap:14px; padding:10px; width:100%; max-width:1200px;
-  }
-  #heartBtn{
-    font-size: clamp(60px,15vw,140px);
-    cursor:pointer; user-select:none;
-    animation: pulse 1.5s infinite;
-    filter: drop-shadow(0 10px 25px rgba(122,17,95,.3));
-  }
-  @keyframes pulse{ 0%,100%{transform:scale(1)} 50%{transform:scale(1.2)} }
-
-  .text-box{
-    background: rgba(255,255,255,0.82);
-    backdrop-filter: blur(6px);
-    border: 1px solid rgba(255,255,255,0.7);
-    box-shadow: 0 12px 40px rgba(122,17,95,0.18);
-    border-radius: 22px;
-    padding: clamp(16px, 3.5vw, 28px);
-    max-width: min(920px, 92vw);
-    text-align:center;
-  }
-  h1{
-    font-size: clamp(32px,7vw,72px);
-    margin:0; color:var(--ink1);
-    text-shadow:0 2px 14px rgba(255,118,182,.25);
-  }
-  p.lead{
-    font-size:clamp(18px,4vw,28px);
-    margin:10px 0 14px; color:var(--ink2);
-  }
-  #msg{
-    font-size:clamp(20px,4.5vw,32px);
-    color:var(--ink3);
-    opacity:0; transform:translateY(14px);
-    transition:opacity .6s ease, transform .6s ease;
-  }
-  #msg.show{opacity:1; transform:translateY(0)}
+  .aurora{ position:fixed; inset:0; z-index:0; pointer-events:none; }
+  .blob{ position:absolute; filter: blur(40px); opacity:.35; mix-blend-mode:screen; border-radius:50%; animation: drift 18s ease-in-out infinite alternate; }
+  .blob.one{ width:38vw; height:38vw; left:-8vw; top:10vh; background: radial-gradient(circle at 30% 30%, #fff 0 20%, #ffd6f0 35%, transparent 70%); }
+  .blob.two{ width:46vw; height:46vw; right:-12vw; bottom:-8vh; background: radial-gradient(circle at 70% 70%, #fff 0 12%, #c9b1ff 35%, transparent 70%); animation-duration: 22s }
+  @keyframes drift{ from{transform:translateY(-12px)} to{transform:translateY(12px)} }
+  .content{ position:relative; z-index:2; display:flex; flex-direction:column; align-items:center; gap:18px; padding:10px; width:min(1100px, 96vw); }
+  .text-box{ background: linear-gradient(180deg, var(--glass), rgba(255,255,255,.62)); backdrop-filter: blur(8px); border: 1px solid var(--glass-border); border-radius: 26px; box-shadow: var(--shadow); padding: clamp(18px, 4vw, 32px); text-align:center; }
+  h1{ font-size: clamp(34px,7.4vw,76px); margin:0; background: linear-gradient(135deg, #b76cff, #ff7ab6); -webkit-background-clip:text; background-clip:text; color:transparent; text-shadow: 0 2px 16px rgba(255,118,182,.25); }
+  p.lead{ font-size: clamp(18px,4vw,28px); margin:10px 0 16px; color:var(--ink2); }
+  #msg{ font-size: clamp(20px,4.5vw,32px); color:var(--ink3); opacity:0; transform:translateY(12px); transition:opacity .6s ease, transform .6s ease; }
+  #msg.show{ opacity:1; transform:translateY(0) }
+  #heartBtn{ font-size: clamp(60px,15vw,140px); cursor:pointer; user-select:none; filter: drop-shadow(0 10px 30px rgba(183,108,255,.28)); animation: pulse 1.6s ease-in-out infinite, float 4.5s ease-in-out infinite; }
+  @keyframes pulse{ 0%,100%{transform:scale(1)} 50%{transform:scale(1.15)} }
+  @keyframes float{ 0%,100%{ translate:0 0 } 50%{ translate:0 -6px } }
 </style>
 </head>
 <body>
-  <!-- BACKGROUND CANVASES -->
+  <div class="aurora"><div class="blob one"></div><div class="blob two"></div></div>
   <canvas id="bg" class="bg-layer"></canvas>
   <canvas id="confetti" class="bg-layer"></canvas>
 
-  <!-- FOREGROUND CONTENT -->
   <div class="content" aria-live="polite">
     <div id="heartBtn" aria-label="Heart">💖</div>
     <div class="text-box">
@@ -77,15 +60,11 @@
   </div>
 
 <script>
-// ---- Mobile-safe settings ----
 const isMobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
-const DPR = Math.min(1.5, (window.devicePixelRatio || 1)); // cap to reduce memory
-
-// Pause animations when tab is hidden (saves resources)
+const DPR = Math.min(1.5, (window.devicePixelRatio || 1));
 let running = true;
 document.addEventListener('visibilitychange', () => { running = !document.hidden; });
 
-// ---------- Sprite cache for emojis ----------
 function makeEmojiCanvas(char, size){
   const c = document.createElement('canvas');
   const pad = Math.ceil(size*0.35);
@@ -103,7 +82,7 @@ function getGlyph(char, size){
   return glyphCache.get(key);
 }
 
-// ---------- Emoji tunnel background ----------
+// Background tunnel
 const bg = document.getElementById('bg');
 const ctx = bg.getContext('2d');
 let W,H,cx,cy;
@@ -116,18 +95,18 @@ function resizeBG(){
 }
 resizeBG(); addEventListener('resize',resizeBG, {passive:true});
 
-const EMOJIS = ["❤️","💖","💜","💕","💘","💞","😘","😚","😙","😗","⭐","✨"];
+const EMOJIS = ["❤️","💖","💜","💕","💘","💞","😘","😚","😙","😗","☁️","🌥️","🌤️","🌙","⭐","✨","🌟"];
 let sprites = [];
-const SPRITE_COUNT = isMobile ? 90 : 150; // fewer on mobile
+const SPRITE_COUNT = isMobile ? 88 : 138;
 for(let i=0;i<SPRITE_COUNT;i++){ sprites.push(resetSprite({})); }
 function resetSprite(s){
   s.angle=Math.random()*Math.PI*2;
   s.radius=0.35+Math.random()*1;
   s.z=1+Math.random()*3.2;
   s.char=EMOJIS[(Math.random()*EMOJIS.length)|0];
-  s.size=(isMobile?14:16)+Math.random()*22;
-  s.spin=(Math.random()<.5?-1:1)*(0.002+Math.random()*0.006);
-  s.speed=(isMobile?0.014:0.012)+Math.random()*0.018;
+  s.size=(isMobile?16:18)+Math.random()*26;
+  s.spin=(Math.random()<.5?-1:1)*(0.0012+Math.random()*0.0035);
+  s.speed=(isMobile?0.012:0.010)+Math.random()*0.016;
   return s;
 }
 function loopBG(){
@@ -136,11 +115,11 @@ function loopBG(){
   for(const s of sprites){
     s.angle+=s.spin; s.z-=s.speed;
     if(s.z<=0.05) resetSprite(s), s.z=3.2;
-    const tubeR=Math.min(W,H)*0.45;
+    const tubeR=Math.min(W,H)*0.44;
     const k=tubeR*s.radius/s.z;
     const x=cx+Math.cos(s.angle)*k;
     const y=cy+Math.sin(s.angle)*k;
-    const size=s.size*(1.6/s.z);
+    const size=s.size*(1.5/s.z);
     const glyph = getGlyph(s.char, size);
     ctx.drawImage(glyph, x - glyph.width/2, y - glyph.height/2);
   }
@@ -148,7 +127,7 @@ function loopBG(){
 }
 requestAnimationFrame(loopBG);
 
-// ---------- Confetti bursts (behind text) ----------
+// Confetti bursts
 const conf=document.getElementById('confetti');
 const c2=conf.getContext('2d');
 let W2,H2;
@@ -162,15 +141,16 @@ function resizeC(){
 resizeC(); addEventListener('resize',resizeC, {passive:true});
 
 let pieces=[];
-const MAX_PIECES = isMobile ? 500 : 900;
-function addConfetti(n=110, origin={x:innerWidth/2,y:innerHeight/2}){
+const MAX_PIECES = isMobile ? 480 : 840;
+function addConfetti(n=96, origin={x:innerWidth/2,y:innerHeight/2}){
   const count = isMobile ? Math.floor(n*0.7) : n;
   for(let i=0;i<count;i++){
+    const char = EMOJIS[(Math.random()*EMOJIS.length)|0];
     pieces.push({x:origin.x,y:origin.y,
-      vx:(Math.random()*2-1)*6.5, vy:(Math.random()*-1-1)*7.5,
-      g:0.22+Math.random()*0.09,
-      char:EMOJIS[(Math.random()*EMOJIS.length)|0],
-      size:(isMobile?20:22)+Math.random()*26,
+      vx:(Math.random()*2-1)*6.0, vy:(Math.random()*-1-1)*7.0,
+      g:0.20+Math.random()*0.09,
+      char,
+      size:(isMobile?22:24)+Math.random()*26,
       life:(isMobile?120:150)+Math.random()*120
     });
   }
@@ -189,20 +169,49 @@ function loopConfetti(){
 }
 requestAnimationFrame(loopConfetti);
 
-// ---------- Interactions ----------
+// Interaction: click + TOUCH ANYWHERE pops
 const btn=document.getElementById('heartBtn');
 const msg=document.getElementById('msg');
 
+function popAt(x,y,scale=1){
+  addConfetti(Math.round((isMobile?64:88)*scale), {x,y});
+}
+
+// button tap
 btn.addEventListener('click',()=>{
   msg.classList.add('show');
-  addConfetti(isMobile?150:220,{x:innerWidth/2,y:innerHeight/2.1});
-}, {passive:true});
-document.addEventListener('click',e=>{
-  if(e.target===btn) return;
-  addConfetti(isMobile?70:90,{x:e.clientX,y:e.clientY});
+  popAt(innerWidth/2, innerHeight/2.08, 2.2);
 }, {passive:true});
 
-setTimeout(()=> addConfetti(isMobile?70:90,{x:innerWidth/2,y:innerHeight/1.25}), 700);
+// legacy click for desktops
+document.addEventListener('click',e=>{
+  if(e.target===btn) return;
+  popAt(e.clientX, e.clientY, 1);
+}, {passive:true});
+
+// pointer down = touch anywhere
+let isTouching = false;
+let lastPop = 0;
+document.addEventListener('pointerdown', e=>{
+  isTouching = true;
+  popAt(e.clientX, e.clientY, 1.2);
+}, {passive:true});
+
+// swipe trail (throttled)
+document.addEventListener('pointermove', e=>{
+  if(!isTouching) return;
+  const now = performance.now();
+  if(now - lastPop > 70){ // throttle to ~14 pops/sec
+    lastPop = now;
+    popAt(e.clientX, e.clientY, 0.6);
+  }
+}, {passive:true});
+
+document.addEventListener('pointerup', ()=>{ isTouching = false; }, {passive:true});
+document.addEventListener('pointercancel', ()=>{ isTouching = false; }, {passive:true});
+
+// gentle intro
+setTimeout(()=> popAt(innerWidth/2, innerHeight/1.22, 1.1), 700);
 </script>
 </body>
 </html>
