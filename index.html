@@ -174,14 +174,69 @@
   }
   @keyframes orbit{ to{ transform: rotate(360deg) } }
 
-  .text-box{
-    background: linear-gradient(180deg, var(--glass), rgba(255,255,255,.64));
-    -webkit-backdrop-filter: blur(7px); backdrop-filter: blur(7px);
-    border: 1px solid var(--glass-border);
-    border-radius: 24px; box-shadow: var(--shadow);
-    padding: clamp(18px, 5vw, 32px);
-    text-align:center; max-width: 820px; margin: 0 auto;
-  }
+  
+.text-box{
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(180deg, var(--glass), rgba(255,255,255,.64));
+  -webkit-backdrop-filter: blur(7px); backdrop-filter: blur(7px);
+  border: 1px solid var(--glass-border);
+  border-radius: 24px;
+  box-shadow: var(--shadow), 0 0 0 1px rgba(255,255,255,.6) inset, 0 18px 50px rgba(183,108,255,.18);
+  padding: clamp(18px, 5vw, 32px);
+  text-align:center;
+  max-width: 820px;
+  margin: 0 auto;
+}
+/* Fairytale glitter overlay (stars + shimmer) */
+.text-box::before{
+  content:"";
+  position:absolute; inset:-4px;
+  border-radius: inherit;
+  pointer-events:none;
+  background:
+    linear-gradient(115deg, transparent 45%, rgba(255,255,255,.55) 50%, transparent 55%),
+    radial-gradient(3px 3px at 18% 22%, rgba(255,255,255,.9), transparent 60%),
+    radial-gradient(2.6px 2.6px at 62% 18%, rgba(255,255,255,.85), transparent 60%),
+    radial-gradient(2.8px 2.8px at 82% 66%, rgba(255,255,255,.9), transparent 60%),
+    radial-gradient(2px 2px at 32% 74%, rgba(255,255,255,.85), transparent 60%),
+    radial-gradient(2px 2px at 12% 84%, rgba(255,255,255,.85), transparent 60%);
+  mix-blend-mode: screen;
+  animation: shimmer 3.2s linear infinite, twinkle 1.8s steps(1,end) infinite;
+  opacity:.9;
+ z-index:2;
+}
+/* Animated prismatic border */
+.text-box::after{
+  content:"";
+  position:absolute; inset:-3px;
+  border-radius: inherit;
+  background: conic-gradient(from 0deg, #ffd6ea, #ffffff, #f0d4ff, #ffd6ea);
+  padding:3px;
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  
+  pointer-events:none;
+  box-shadow: 0 0 20px rgba(255, 170, 232, .25);
+ z-index:1; opacity:.85;
+}
+@keyframes shimmer{
+  0%{ background-position: -200% 0, 0 0, 0 0, 0 0, 0 0, 0 0; }
+  100%{ background-position: 200% 0, 0 0, 0 0, 0 0, 0 0, 0 0; }
+}
+@keyframes twinkle{
+  0%, 100%{ opacity:.88; }
+  50%{ opacity:1; }
+}
+ }
+@media (prefers-reduced-motion: reduce){
+  .text-box::before, .text-box::after{ animation: none !important;  z-index:1; opacity:.85;
+}
+}
+
   
 h1{
   font-size: clamp(36px,7.6vw,84px); margin:0;
@@ -203,6 +258,50 @@ h1{
   @media (prefers-reduced-motion: reduce){
     .flap, .heart-wrap::before, .orbit, #heartBtn, .sweep{ animation: none !important; transition: none !important; }
   }
+
+/* --- Fairytale spark pops on the message box --- */
+.text-box .sparks{
+  position:absolute; inset:0; pointer-events:none; z-index:5;
+}
+
+.text-box .spark{
+  position:absolute; width:10px; height:10px;
+  left:50%; top:50%; transform: translate(-50%,-50%) scale(0.25);
+  border-radius:50%;
+  background: radial-gradient(circle, rgba(255,255,255,1) 0 45%, rgba(255,255,255,0) 72%);
+  filter: drop-shadow(0 0 10px rgba(255,255,255,.98)) drop-shadow(0 0 16px rgba(255,210,255,.70));
+  opacity:0;
+  animation: sparkPop 1000ms ease-out forwards;
+}
+
+
+.text-box .spark::before,
+.text-box .spark::after { width:2px; height:26px; opacity:1; }
+
+.text-box .spark::before{ width:26px; height:2px; opacity:1; }
+.text-box .spark::after { width:2px; height:26px; opacity:1; }
+
+@keyframes sparkPop{
+  0%  { opacity:0; transform: translate(-50%,-50%) scale(0.2); }
+  30% { opacity:1; transform: translate(-50%,-50%) scale(1); }
+  70% { opacity:1; transform: translate(-50%,-50%) scale(1); }
+  100%{ opacity:0; transform: translate(-50%,-50%) scale(0.2); }
+}
+
+@media (prefers-reduced-motion: reduce){
+  
+.text-box .spark{
+  position:absolute; width:10px; height:10px;
+  left:50%; top:50%; transform: translate(-50%,-50%) scale(0.25);
+  border-radius:50%;
+  background: radial-gradient(circle, rgba(255,255,255,1) 0 45%, rgba(255,255,255,0) 72%);
+  filter: drop-shadow(0 0 10px rgba(255,255,255,.98)) drop-shadow(0 0 16px rgba(255,210,255,.70));
+  opacity:0;
+  animation: sparkPop 1000ms ease-out forwards;
+}
+
+}
+
 </style>
 </head>
 <body>
@@ -243,6 +342,7 @@ h1{
       </div>
 
       <div class="text-box">
+        <div class="sparks" id="sparks" aria-hidden="true"></div>
         <h1 id="headline">Happy Birthday My Love</h1>
         <div id="moreText">My heart beats happiest with you 💕
 I love you more than all the stars ✨, all the songs 🎶, and every heartbeat ❤️. Happy Birthday, my forever. 💕💜💘😘</div>
@@ -482,13 +582,69 @@ function bindPartyEvents(){
 
 
 /* Start renderers after envelope opens */
+
+/* Spark generator on the message box */
+function startSparks(){
+  // initial sparkle
+  setTimeout(()=>{ const layer=document.getElementById('sparks'); if(layer){ const s=document.createElement('div'); s.className='spark'; s.style.left='50%'; s.style.top='40%'; layer.appendChild(s); setTimeout(()=>s.remove(), 1000);} }, 250);
+
+  const box = document.querySelector('.text-box');
+  const layer = document.getElementById('sparks');
+  if(!box || !layer) return;
+
+  const isReduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const maxSparks = isMobile ? 12 : 16;
+  let active = 0;
+
+  function spawn(){
+    if(active >= maxSparks) return;
+    const rect = box.getBoundingClientRect();
+    // Keep sparks within inner area (avoid edges/padding)
+    const padX = Math.min(24, rect.width * 0.06);
+    const padY = Math.min(18, rect.height * 0.08);
+    const x = Math.random() * (rect.width - padX*2) + padX;
+    const y = Math.random() * (rect.height - padY*2) + padY;
+
+    const s = document.createElement('div');
+    s.className = 'spark';
+    s.style.left = x + 'px';
+    s.style.top  = y + 'px';
+    layer.appendChild(s);
+    active++;
+
+    const life = isReduce ? 0 : 900;
+    setTimeout(()=>{ s.remove(); active--; }, life || 0);
+  }
+
+  // Ambient interval (slightly randomized cadence)
+  let base = isMobile ? 420 : 360;
+  const timer = setInterval(()=>{
+    // Occasionally spawn 2 at once for a little flare
+    spawn();
+    if(Math.random() < 0.28) spawn();
+  }, base + Math.random()*220);
+
+  // Also spark on heart click reveal for extra delight
+  const heart = document.getElementById('heartWrap');
+  if(heart){
+    heart.addEventListener('click', ()=>{
+      for(let i=0;i<4;i++) setTimeout(spawn, i*90);
+    }, {passive:true});
+  }
+
+  // Clean up if visibility changes (battery friendly)
+  document.addEventListener('visibilitychange', ()=>{
+    if(document.hidden){ clearInterval(timer); }
+  }, {once:true});
+}
+
 function startParty(){
   setupCanvases();
   initSprites();
   requestAnimationFrame(loopBG);
   requestAnimationFrame(loopConfetti);
   bindPartyEvents();
-}
+startSparks(); }
 
 /* Minor fix for iOS momentum scroll repaint */
 document.addEventListener('touchmove', ()=>{}, {passive:true});
